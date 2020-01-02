@@ -1,6 +1,12 @@
 <template>
   <div id="toolBody">
-    <div class="toolBaritem" v-for="(item, i) in items" :title="item.label" :key="i" @click="btnClick({ $event, item })">
+    <div
+      class="toolBaritem"
+      v-for="(item, i) in items"
+      :title="item.label"
+      :key="i"
+      @click="btnClick({ $event, item })"
+    >
       <i :class="item.className"></i>
     </div>
     <!-- <div class="closebtn" title="收起" @click="hideToolBar">
@@ -13,17 +19,15 @@ export default {
   data() {
     return {
       items: [
-        // { label: '放大', className: 'big-icon' },
-        // { label: '缩小', className: 'small-icon' },
+        { label: '放大', className: 'el-icon-circle-plus-outline' },
+        { label: '缩小', className: 'el-icon-remove-outline' },
         { label: '平移', className: 'el-icon-rank' },
-        // { label: '分屏', className: 'split-icon' },
+        { label: '全图', className: 'el-icon-monitor' },
+        { label: '测距', className: 'el-icon-watermelon' },
+        { label: '测面', className: 'el-icon-crop' },
         { label: '查看属性', className: 'el-icon-info' },
-        { label: '添加数据', className: 'el-icon-circle-plus' }
-        // { label: '测距', className: 'el-icon-rank' },
-        // { label: '测面', className: 'el-icon-rank' },
-        // { label: '框选', className: 'select-icon' },
-        // { label: '搜索', className: 'search-icon' },
-        // { label: '全图', className: 'el-icon-rank' }
+        { label: '添加数据', className: 'el-icon-circle-plus' },
+        { label: '地图出图', className: 'el-icon-picture' }
       ],
       popup: null
     };
@@ -32,7 +36,7 @@ export default {
     map: Object,
     dialogVisible: Boolean
   },
-  mounted() { },
+  mounted() {},
   methods: {
     btnClick(obj) {
       console.log('label', obj.item.label);
@@ -46,6 +50,9 @@ export default {
           break;
         case '添加数据':
           this.$parent.showDialog();
+          break;
+        case '地图出图':
+          this.$parent.saveImage();
           break;
       }
     },
@@ -106,6 +113,6 @@ export default {
 }
 i {
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 20px;
 }
 </style>

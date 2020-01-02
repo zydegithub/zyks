@@ -1,6 +1,6 @@
 <template>
   <div id="mainMap">
-    <div id="map"></div>
+    <div id="map" ref="map"></div>
     <MousePostion v-if="mapbuild" :map="map"></MousePostion>
     <toolbar :map="map" :dialogVisible="dialogVisible"></toolbar>
     <treeLayer :map="map" :layerName="layerName" :shpNames="shpNames"></treeLayer>
@@ -20,7 +20,12 @@
           </div>
           <div style="margin-top:10px">
             <span>上传数据:</span>
-            <el-upload ref="upload" class="itembtn el-button" :action="uploadShp" :on-success="uploadShpSuccess">
+            <el-upload
+              ref="upload"
+              class="itembtn el-button"
+              :action="uploadShp"
+              :on-success="uploadShpSuccess"
+            >
               <div class="el-upload__text">
                 <span class="text">添加shp(zip)</span>
               </div>
@@ -44,6 +49,21 @@
         <el-button type="primary" @click="addGeoJson(geojson)">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="地图出图"
+      :visible.sync="imagedialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <div class="imgname">
+        <span>出图名称:</span>
+        <el-input v-model="imgName" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
+      </div>
+      <el-image style="width: 500px" :src="this.dataURL" v-show="this.dataURL"></el-image>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="downs">导出图片</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,6 +79,7 @@ export default {
       map: null,
       measureControl: null,
       dialogVisible: false,
+      imagedialogVisible: false,
       activeName: 'first',
       shpinput: '6666',
       imginput: '',
@@ -71,7 +92,9 @@ export default {
       ymin: '',
       ymax: '',
       layerName: '',
-      shpNames: []
+      shpNames: [],
+      dataURL: '',
+      imgName: ''
     };
   },
   mounted() {
@@ -93,7 +116,7 @@ export default {
       debugger;
       this.map.setPaintProperty('drawpointlayer', 'circle-color', val);
     },
-    linecolor: function(val, old) { },
+    linecolor: function(val, old) {},
     polygoncolor: function(val, old) {
       debugger;
       this.map.setPaintProperty('drawpolygonlayer', 'fill-color', val);
@@ -175,7 +198,8 @@ export default {
             source: 'national-park',
             paint: {
               'fill-color': '#888888',
-              'fill-opacity': 0.4
+              'fill-opacity': 0.4,
+              'fill-outline-color': '#888888'
             },
             filter: ['==', '$type', 'Polygon']
           });
@@ -238,14 +262,30 @@ export default {
       var y = [];
       for (var i = 0; i < json.features.length; i++) {
         if (typeof json.features[i].geometry.coordinates[0] == 'number') {
-          array.push([json.features[i].geometry.coordinates[0], json.features[i].geometry.coordinates[1]]);
+          array.push([
+            json.features[i].geometry.coordinates[0],
+            json.features[i].geometry.coordinates[1]
+          ]);
         } else {
-          if (typeof json.features[i].geometry.coordinates[0][0][0] == 'number') {
-            for (var q = 0; q < json.features[i].geometry.coordinates[0].length; q++) {
-              array.push([json.features[i].geometry.coordinates[0][q][0], json.features[i].geometry.coordinates[0][q][1]]);
+          if (
+            typeof json.features[i].geometry.coordinates[0][0][0] == 'number'
+          ) {
+            for (
+              var q = 0;
+              q < json.features[i].geometry.coordinates[0].length;
+              q++
+            ) {
+              array.push([
+                json.features[i].geometry.coordinates[0][q][0],
+                json.features[i].geometry.coordinates[0][q][1]
+              ]);
             }
           } else {
-            for (var k = 0; k < json.features[i].geometry.coordinates[0][0].length; k++) {
+            for (
+              var k = 0;
+              k < json.features[i].geometry.coordinates[0][0].length;
+              k++
+            ) {
               array.push(json.features[i].geometry.coordinates[0][0][k]);
             }
           }
@@ -290,6 +330,35 @@ export default {
         minzoom,
         maxzoom
       });
+    },
+    saveImage() {
+      this.imagedialogVisible = true;
+      this.$html2canvas(this.$refs.map, {
+        backgroundColor: null
+      }).then(canvas => {
+        let dataURL = canvas.toDataURL('image/png');
+        this.dataURL = dataURL;
+      });
+    },
+    downs() {
+      if (this.imgName != '') {
+        this.imagedialogVisible = false;
+        var alink = document.createElement('a');
+        alink.href = this.dataURL;
+        alink.download = this.imgName; // 图片名
+        alink.click();
+        this.dataURL = '';
+        this.imgName = '';
+      } else {
+        this.$message({
+          message: '名称不能为空！',
+          type: 'warning'
+        });
+      }
+    },
+    handleClose() {
+      this.dataURL = '';
+      this.imagedialogVisible = false;
     }
   }
 };
@@ -338,8 +407,17 @@ export default {
   background-color: #3f8cee;
 }
 .topSpan {
+  color: #fff;
   font-size: 18px;
   margin-left: 20px;
   line-height: 40px;
+}
+.imgname {
+  float: left;
+  margin-bottom: 10px;
+  span {
+    font-size: 16px;
+    margin-left: 16px;
+  }
 }
 </style>

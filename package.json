@@ -17,6 +17,7 @@
     "echarts": "^4.2.1",
     "element": "^0.1.4",
     "element-ui": "^2.11.1",
+    "html2canvas": "^1.0.0-rc.5",
     "iview": "^3.5.0-rc.1",
     "mapbox-gl-leaflet": "0.0.7",
     "node-sass": "^4.12.0",
