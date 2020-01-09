@@ -12,10 +12,13 @@ import html2canvas from 'html2canvas';
 import store from './vuex/index';
 import 'iview/dist/styles/iview.css';
 import 'element-ui/lib/theme-chalk/index.css';
+import preview from 'vue-photo-preview';
+import 'vue-photo-preview/dist/skin.css';
 
 Vue.use(Vuetify);
 Vue.use(ElementUI);
 Vue.use(iView);
+Vue.use(preview);
 Vue.prototype.$html2canvas = html2canvas;
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$axios = axios;

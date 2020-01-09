@@ -53,13 +53,15 @@
       title="地图出图"
       :visible.sync="imagedialogVisible"
       width="30%"
+      :modal="false"
       :before-close="handleClose"
+      id="dialog"
     >
       <div class="imgname">
         <span>出图名称:</span>
         <el-input v-model="imgName" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
       </div>
-      <el-image style="width: 500px" :src="this.dataURL" v-show="this.dataURL"></el-image>
+      <img style="width: 500px" :src="this.dataURL" v-show="this.dataURL" alt preview="index" />
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="downs">导出图片</el-button>
       </span>
@@ -104,6 +106,7 @@ export default {
     newgeojson: {
       handler: function(val, oldVal) {
         try {
+          debugger;
           this.geojson = JSON.parse(val);
         } catch (e) {
           console.log('请输入正确的geojson');
@@ -145,6 +148,7 @@ export default {
         epsg: 'EPSG:4490',
         preserveDrawingBuffer: true
       });
+      this.$previewRefresh();
       this.map.on('load', async() => {
         this.mapbuild = true;
       });
@@ -167,11 +171,13 @@ export default {
     },
     // 上传成功事件
     uploadShpSuccess(res) {
+      debugger;
       let data = JSON.parse(res.data);
       this.geojsonEditShow = true;
       this.newgeojson = data.geojson; // 触发加载geojson事件
     },
     addGeoJson(json) {
+      debugger;
       // 加载矢量
       if (json != '') {
         this.getbounds(json);
@@ -419,5 +425,8 @@ export default {
     font-size: 16px;
     margin-left: 16px;
   }
+}
+#dialog {
+  z-index: 50 !important;
 }
 </style>

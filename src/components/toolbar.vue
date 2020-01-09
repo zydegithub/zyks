@@ -77,7 +77,7 @@ export default {
       // 属性值
       var attr_value = document.createElement('span');
       attr_value.className = 'popup_attr_property_box';
-      attr_value.innerText = features[0].properties['省区名称'];
+      attr_value.innerText = features[0].properties['NAME'];
       attr_box.appendChild(attr_value);
       layer_container.appendChild(attr_box);
       if (this.popup) this.popup.remove();
