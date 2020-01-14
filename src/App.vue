@@ -42,12 +42,15 @@ export default {
   height: 40px;
 }
 i {
-  font-size: 16px;
+  font-size: 20px;
 }
 .popup_attr_property_box {
   font-family: Microsoft YaHei, Helvetica, Arial, sans-serif;
   margin: 2px;
   font-size: 16px;
   color: gray;
+}
+.el-input-group__prepend {
+  padding: 0 14px !important;
 }
 </style>

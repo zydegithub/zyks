@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import asideBar from './modules/asideBar/asideBar.js';
+import user from './modules/asideBar/user.js';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    asideBar
+    user
   }
 });

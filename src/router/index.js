@@ -10,15 +10,22 @@ import Router from 'vue-router';
 // import filp from '@/components/filp';
 // import flag from '@/components/flag';
 // import echarts from '@/components/echarts';
-// import mainMap from '@/components/mainMap';
-import axios from '@/components/axios';
+import mainMap from '@/components/mainMap';
+import login from '@/components/login';
+// import axios from '@/components/axios';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [{
     path: '/',
-    name: 'nextTick',
-    component: axios
-  }]
+    name: 'login',
+    component: login
+  },
+  {
+    path: '/mainMap',
+    name: 'mainMap',
+    component: mainMap
+  }
+  ]
 });
