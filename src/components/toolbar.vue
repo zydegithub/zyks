@@ -19,15 +19,15 @@ export default {
   data() {
     return {
       items: [
-        { label: '放大', className: 'el-icon-circle-plus-outline' },
-        { label: '缩小', className: 'el-icon-remove-outline' },
-        { label: '平移', className: 'el-icon-rank' },
-        { label: '全图', className: 'el-icon-monitor' },
-        { label: '测距', className: 'el-icon-watermelon' },
-        { label: '测面', className: 'el-icon-crop' },
-        { label: '查看属性', className: 'el-icon-info' },
-        { label: '添加数据', className: 'el-icon-circle-plus' },
-        { label: '地图出图', className: 'el-icon-picture' }
+        { label: "放大", className: "el-icon-circle-plus-outline" },
+        { label: "缩小", className: "el-icon-remove-outline" },
+        { label: "平移", className: "el-icon-rank" },
+        { label: "全图", className: "el-icon-monitor" },
+        { label: "测距", className: "el-icon-watermelon" },
+        { label: "测面", className: "el-icon-crop" },
+        { label: "查看属性", className: "el-icon-info" },
+        { label: "添加数据", className: "el-icon-circle-plus" },
+        { label: "地图出图", className: "el-icon-picture" }
       ],
       popup: null
     };
@@ -39,45 +39,48 @@ export default {
   mounted() {},
   methods: {
     btnClick(obj) {
-      console.log('label', obj.item.label);
+      console.log("label", obj.item.label);
       switch (obj.item.label) {
-        case '平移':
+        case "平移":
           this.finish();
           break;
-        case '查看属性':
-          this.map.getCanvas().style.cursor = 'pointer';
-          this.map.on('click', this._onClick);
+        case "查看属性":
+          this.map.getCanvas().style.cursor = "pointer";
+          this.map.on("click", this._onClick);
           break;
-        case '添加数据':
+        case "添加数据":
           this.$parent.showDialog();
           break;
-        case '地图出图':
+        case "地图出图":
           this.$parent.saveImage();
           break;
       }
     },
     finish() {
       this.map.doubleClickZoom.isEnabled();
-      this.map.getCanvas().className = '';
-      this.map.getCanvas().style.cursor = '';
+      this.map.getCanvas().className = "";
+      this.map.getCanvas().style.cursor = "";
     },
     _onClick(e) {
-      var bbox = [[e.point.x, e.point.y], [e.point.x, e.point.y]];
+      var bbox = [
+        [e.point.x, e.point.y],
+        [e.point.x, e.point.y]
+      ];
       var features = this.map.queryRenderedFeatures(bbox, {
-        layers: ['6666']
+        layers: ["6666"]
       });
-      var layer_container = document.createElement('div');
-      var attr_box = document.createElement('div');
-      attr_box.className = 'popup_attr_property_box';
+      var layer_container = document.createElement("div");
+      var attr_box = document.createElement("div");
+      attr_box.className = "popup_attr_property_box";
       // 属性名
-      var attr_name = document.createElement('span');
-      attr_name.className = 'popup_attr_property_box';
-      attr_name.innerText = '省区名称' + ': ';
+      var attr_name = document.createElement("span");
+      attr_name.className = "popup_attr_property_box";
+      attr_name.innerText = "省区名称" + ": ";
       attr_box.appendChild(attr_name);
       // 属性值
-      var attr_value = document.createElement('span');
-      attr_value.className = 'popup_attr_property_box';
-      attr_value.innerText = features[0].properties['NAME'];
+      var attr_value = document.createElement("span");
+      attr_value.className = "popup_attr_property_box";
+      attr_value.innerText = features[0].properties["NAME"];
       attr_box.appendChild(attr_value);
       layer_container.appendChild(attr_box);
       if (this.popup) this.popup.remove();
@@ -96,7 +99,7 @@ export default {
   display: flex;
   border: 1px solid #dddddd;
   position: absolute;
-  top: 25px;
+  top: 100px;
   right: 25px;
   z-index: 10;
 }

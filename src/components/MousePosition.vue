@@ -14,11 +14,11 @@ export default {
   data() {
     return {
       lacationInfo: {
-        lng: '0.0000',
-        lat: '0.0000',
-        zoom: '0.00',
-        epsg: '经纬度',
-        scale: ''
+        lng: "0.0000",
+        lat: "0.0000",
+        zoom: "0.00",
+        epsg: "经纬度",
+        scale: ""
       }
     };
   },
@@ -26,20 +26,20 @@ export default {
     map: Object
   },
   mounted() {
-    this.map.on('mousemove', this.mouseMove);
-    this.map.on('zoomend', this.zoomEnd);
+    this.map.on("mousemove", this.mouseMove);
+    this.map.on("zoomend", this.zoomEnd);
   },
   methods: {
     mouseMove(e) {
       if (e.lngLat.lng.toFixed(4) > 0) {
-        this.lacationInfo.lng = '东经:' + e.lngLat.lng.toFixed(4);
+        this.lacationInfo.lng = "东经:" + e.lngLat.lng.toFixed(4);
       } else {
-        this.lacationInfo.lng = '西经:' + Math.abs(e.lngLat.lng.toFixed(4));
+        this.lacationInfo.lng = "西经:" + Math.abs(e.lngLat.lng.toFixed(4));
       }
       if (e.lngLat.lat.toFixed(4) > 0) {
-        this.lacationInfo.lat = '北纬:' + e.lngLat.lat.toFixed(4);
+        this.lacationInfo.lat = "北纬:" + e.lngLat.lat.toFixed(4);
       } else {
-        this.lacationInfo.lat = '南纬:' + Math.abs(e.lngLat.lat.toFixed(4));
+        this.lacationInfo.lat = "南纬:" + Math.abs(e.lngLat.lat.toFixed(4));
       }
     },
     zoomEnd(e) {
@@ -60,7 +60,8 @@ export default {
   background: rgba(255, 255, 255, 0.4);
   position: absolute;
   bottom: 0;
-  width: 100%;
+  left: 240px;
+  right: 0px;
   font-size: 14px;
 }
 

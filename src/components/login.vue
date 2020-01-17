@@ -4,12 +4,21 @@
       <h1>用户登录</h1>
       <div class="user">
         <el-input placeholder="用户名" v-model="username">
-          <template slot="prepend"><i class="el-icon-user"></i></template>
+          <template slot="prepend">
+            <i class="el-icon-user"></i>
+          </template>
         </el-input>
       </div>
       <div class="pwd">
-        <el-input placeholder="密码" v-model="password" @keyup.enter.native="userLogin" type="password">
-          <template slot="prepend"><i class="el-icon-lock"></i></template>
+        <el-input
+          placeholder="密码"
+          v-model="password"
+          @keyup.enter.native="userLogin"
+          type="password"
+        >
+          <template slot="prepend">
+            <i class="el-icon-lock"></i>
+          </template>
         </el-input>
       </div>
       <Button size="large" class="btn" type="primary" @click="userLogin">登录</Button>
@@ -18,35 +27,38 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapMutations, mapActions } from "vuex";
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   data() {
     return {
-      username: '',
-      password: ''
+      username: "",
+      password: ""
     };
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapMutations(["SET_USERNAME"]),
+    ...mapActions(["login"]),
     userLogin() {
       var that = this;
       this.login({
         data: { username: this.username, password: this.password },
         callBack: res => {
+          console.log(res);
           if (res) {
             that.$Notice.success({
-              title: '登录提示',
-              desc: '账号 ' + that.username + ' 登录成功!',
+              title: "登录提示",
+              desc: "账号 " + that.username + " 登录成功!",
               duration: 1.5
             });
             that.$router.push({
-              name: 'mainMap'
+              name: "Home"
             });
+            that.SET_USERNAME(that.username);
           } else {
             that.$Notice.error({
-              title: '登录提示',
-              desc: '账号 ' + that.username + ' 登录失败!',
+              title: "登录提示",
+              desc: "账号 " + that.username + " 登录失败!",
               duration: 1.5
             });
           }

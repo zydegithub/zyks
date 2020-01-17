@@ -44,17 +44,17 @@ export default {
     return {
       layer: {
         id: 1,
-        label: '',
+        label: "",
         children: []
       },
       data: [],
       layerId: 1,
       leafArray: [],
-      clickLayerName: '',
-      clickLayerType: '',
+      clickLayerName: "",
+      clickLayerType: "",
       dialogVisible: false,
-      color: '',
-      outlineColor: '',
+      color: "",
+      outlineColor: "",
       width: 0,
       opacity: 0
     };
@@ -126,95 +126,95 @@ export default {
     },
     handleCheckChange(data, node, indeterminate) {
       if (node == false) {
-        this.map.setLayoutProperty(data.label, 'visibility', 'none');
+        this.map.setLayoutProperty(data.label, "visibility", "none");
       } else {
-        this.map.setLayoutProperty(data.label, 'visibility', 'visible');
+        this.map.setLayoutProperty(data.label, "visibility", "visible");
       }
     },
     handleNodeClick(data) {
       var layer = this.map.getLayer(data.label);
       this.clickLayerName = layer.id;
       this.clickLayerType = layer.type;
-      if (this.clickLayerType == 'circle') {
+      if (this.clickLayerType == "circle") {
         this.color = this.map.getPaintProperty(
           this.clickLayerName,
-          'circle-color'
+          "circle-color"
         );
         this.width = this.map.getPaintProperty(
           this.clickLayerName,
-          'circle-radius'
+          "circle-radius"
         );
-      } else if (this.clickLayerType == 'line') {
+      } else if (this.clickLayerType == "line") {
         this.color = this.map.getPaintProperty(
           this.clickLayerName,
-          'line-color'
+          "line-color"
         );
         this.width = this.map.getPaintProperty(
           this.clickLayerName,
-          'line-width'
+          "line-width"
         );
         this.opacity = this.map.getPaintProperty(
           this.clickLayerName,
-          'line-opacity'
+          "line-opacity"
         );
-      } else if (this.clickLayerType == 'fill') {
+      } else if (this.clickLayerType == "fill") {
         this.color = this.map.getPaintProperty(
           this.clickLayerName,
-          'fill-color'
+          "fill-color"
         );
         this.opacity = this.map.getPaintProperty(
           this.clickLayerName,
-          'fill-opacity'
+          "fill-opacity"
         );
         this.outlineColor = this.map.getPaintProperty(
           this.clickLayerName,
-          'fill-outline-color'
+          "fill-outline-color"
         );
       }
       this.dialogVisible = true;
     },
     editLayer() {
-      if (this.clickLayerType == 'circle') {
+      if (this.clickLayerType == "circle") {
         this.map.setPaintProperty(
           this.clickLayerName,
-          'circle-color',
+          "circle-color",
           this.color
         );
         this.map.setPaintProperty(
           this.clickLayerName,
-          'circle-radius',
+          "circle-radius",
           parseFloat(this.width)
         );
-      } else if (this.clickLayerType == 'line') {
+      } else if (this.clickLayerType == "line") {
         this.map.setPaintProperty(
           this.clickLayerName,
-          'line-color',
+          "line-color",
           this.color
         );
         this.map.setPaintProperty(
           this.clickLayerName,
-          'line-width',
+          "line-width",
           parseFloat(this.width)
         );
         this.map.setPaintProperty(
           this.clickLayerName,
-          'line-opacity',
+          "line-opacity",
           parseFloat(this.opacity)
         );
-      } else if (this.clickLayerType == 'fill') {
+      } else if (this.clickLayerType == "fill") {
         this.map.setPaintProperty(
           this.clickLayerName,
-          'fill-color',
+          "fill-color",
           this.color
         );
         this.map.setPaintProperty(
           this.clickLayerName,
-          'fill-outline-color',
+          "fill-outline-color",
           this.outlineColor
         );
         this.map.setPaintProperty(
           this.clickLayerName,
-          'fill-opacity',
+          "fill-opacity",
           parseFloat(this.opacity)
         );
       }
@@ -227,9 +227,9 @@ export default {
 <style scoped>
 #tree {
   position: absolute;
-  top: 40px;
+  top: 70px;
   bottom: 0px;
-  left: 0px;
+  left: 240px;
   width: 300px;
   background-color: #fff;
 }

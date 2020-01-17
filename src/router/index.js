@@ -9,23 +9,45 @@ import Router from 'vue-router';
 // import nextTick from '@/components/nextTick';
 // import filp from '@/components/filp';
 // import flag from '@/components/flag';
-// import echarts from '@/components/echarts';
+import Home from '@/components/Home';
 import mainMap from '@/components/mainMap';
 import login from '@/components/login';
-// import axios from '@/components/axios';
+import axios from '@/components/axios';
+import personal from '@/components/personal';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [{
-    path: '/',
-    name: 'login',
-    component: login
-  },
-  {
-    path: '/mainMap',
-    name: 'mainMap',
-    component: mainMap
-  }
+      path: '/',
+      name: 'login',
+      component: login
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
+    {
+      path: '/Home',
+      name: 'Home',
+      component: Home,
+      children: [{
+          path: '/mainMap',
+          name: 'mainMap',
+          component: mainMap
+        },
+        {
+          path: '/axios',
+          name: 'axios',
+          component: axios
+        },
+        {
+          path: '/personal',
+          name: 'personal',
+          component: personal
+        }
+      ]
+    }
   ]
 });

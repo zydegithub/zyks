@@ -70,10 +70,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import MousePostion from './MousePosition';
-import toolbar from './toolbar';
-import treeLayer from './treeLayer';
+import { mapActions } from "vuex";
+import MousePostion from "./MousePosition";
+import toolbar from "./toolbar";
+import treeLayer from "./treeLayer";
 export default {
   data() {
     return {
@@ -82,21 +82,21 @@ export default {
       measureControl: null,
       dialogVisible: false,
       imagedialogVisible: false,
-      activeName: 'first',
-      shpinput: '6666',
-      imginput: '',
-      imgurl: '',
-      uploadShp: CONFIG.processServiceURL + 'file/uploadShp',
-      newgeojson: '',
-      geojson: '',
-      xmin: '',
-      xmax: '',
-      ymin: '',
-      ymax: '',
-      layerName: '',
+      activeName: "first",
+      shpinput: "6666",
+      imginput: "",
+      imgurl: "",
+      uploadShp: CONFIG.processServiceURL + "file/uploadShp",
+      newgeojson: "",
+      geojson: "",
+      xmin: "",
+      xmax: "",
+      ymin: "",
+      ymax: "",
+      layerName: "",
       shpNames: [],
-      dataURL: '',
-      imgName: ''
+      dataURL: "",
+      imgName: ""
     };
   },
   mounted() {
@@ -109,7 +109,7 @@ export default {
           debugger;
           this.geojson = JSON.parse(val);
         } catch (e) {
-          console.log('请输入正确的geojson');
+          console.log("请输入正确的geojson");
         }
       },
       deep: true,
@@ -117,12 +117,12 @@ export default {
     },
     pointcolor: function(val, old) {
       debugger;
-      this.map.setPaintProperty('drawpointlayer', 'circle-color', val);
+      this.map.setPaintProperty("drawpointlayer", "circle-color", val);
     },
     linecolor: function(val, old) {},
     polygoncolor: function(val, old) {
       debugger;
-      this.map.setPaintProperty('drawpolygonlayer', 'fill-color', val);
+      this.map.setPaintProperty("drawpolygonlayer", "fill-color", val);
     }
   },
   components: {
@@ -131,25 +131,25 @@ export default {
     treeLayer
   },
   methods: {
-    ...mapActions(['getAsideBar']),
+    ...mapActions(["getAsideBar"]),
     initMap() {
       if (!mapboxgl.supported()) {
         this.$Message.warning({
-          content: '您的浏览器不支持WebGL,请升级到最新版本。',
+          content: "您的浏览器不支持WebGL,请升级到最新版本。",
           duration: 0
         });
         return;
       }
       this.map = new mapboxgl.Map({
-        container: 'map',
-        style: 'http://yjqz.geo-compass.com/api/v1/styles/1',
+        container: "map",
+        style: "http://yjqz.geo-compass.com/api/v1/styles/1",
         center: [100, 30],
         zoom: 3,
-        epsg: 'EPSG:4490',
+        epsg: "EPSG:4490",
         preserveDrawingBuffer: true
       });
       this.$previewRefresh();
-      this.map.on('load', async() => {
+      this.map.on("load", async () => {
         this.mapbuild = true;
       });
       this.measureControl = new MeasureControl({
@@ -161,9 +161,9 @@ export default {
       window.map = this.map;
     },
     draw() {
-      this.map.on('click', this.measureControl._onClick);
-      this.map.on('dblclick', this.measureControl._onDblClick);
-      this.map.on('mousemove', this.measureControl._onMousemove);
+      this.map.on("click", this.measureControl._onClick);
+      this.map.on("dblclick", this.measureControl._onDblClick);
+      this.map.on("mousemove", this.measureControl._onMousemove);
       this.measureControl._onMeasureAreaStart();
     },
     showDialog() {
@@ -179,75 +179,81 @@ export default {
     addGeoJson(json) {
       debugger;
       // 加载矢量
-      if (json != '') {
+      if (json != "") {
         this.getbounds(json);
-        if (this.shpinput != '' && this.geojson != '') {
+        if (this.shpinput != "" && this.geojson != "") {
           var shp = this.map.getLayer(this.shpinput);
           if (shp != undefined) {
-            this.shpinput = this.shpinput + '1';
+            this.shpinput = this.shpinput + "1";
           }
           this.dialogVisible = false;
-          if (this.map.getSource('national-park') != null) {
-            this.map.getSource('national-park').setData(json);
+          if (this.map.getSource("national-park") != null) {
+            this.map.getSource("national-park").setData(json);
           } else {
-            this.map.addSource('national-park', {
-              type: 'geojson',
+            this.map.addSource("national-park", {
+              type: "geojson",
               data: json
             });
           }
           this.map.addLayer({
             id: this.shpinput,
             layout: {
-              visibility: 'visible'
+              visibility: "visible"
             },
-            type: 'fill',
-            source: 'national-park',
+            type: "fill",
+            source: "national-park",
             paint: {
-              'fill-color': '#888888',
-              'fill-opacity': 0.4,
-              'fill-outline-color': '#888888'
+              "fill-color": "#888888",
+              "fill-opacity": 0.4,
+              "fill-outline-color": "#888888"
             },
-            filter: ['==', '$type', 'Polygon']
+            filter: ["==", "$type", "Polygon"]
           });
           this.map.addLayer({
-            id: 'drawpointlayer',
-            type: 'circle',
+            id: "drawpointlayer",
+            type: "circle",
             layout: {
-              visibility: 'visible'
+              visibility: "visible"
             },
-            source: 'national-park',
+            source: "national-park",
             paint: {
-              'circle-radius': 6,
-              'circle-color': '#B42222'
+              "circle-radius": 6,
+              "circle-color": "#B42222"
             },
-            filter: ['==', '$type', 'Point']
+            filter: ["==", "$type", "Point"]
           });
           this.map.addLayer({
-            id: 'drawlinelayer',
-            type: 'line',
-            source: 'national-park',
+            id: "drawlinelayer",
+            type: "line",
+            source: "national-park",
             layout: {
-              visibility: 'visible'
+              visibility: "visible"
             },
             paint: {
-              'line-width': 6,
-              'line-color': '#B42222',
-              'line-opacity': 0.8
+              "line-width": 6,
+              "line-color": "#B42222",
+              "line-opacity": 0.8
             },
-            filter: ['==', '$type', 'LineString']
+            filter: ["==", "$type", "LineString"]
           });
           this.layerName = this.shpinput;
-          this.map.fitBounds([[this.xmin, this.ymax], [this.xmax, this.ymin]], {
-            padding: 200
-          });
-          this.imgurl = this.imginput = this.shpinput = '';
+          this.map.fitBounds(
+            [
+              [this.xmin, this.ymax],
+              [this.xmax, this.ymin]
+            ],
+            {
+              padding: 200
+            }
+          );
+          this.imgurl = this.imginput = this.shpinput = "";
           this.$refs.upload.clearFiles();
         } else {
-          this.$message.error('未完善信息！');
+          this.$message.error("未完善信息！");
         }
       } else {
         // 加载栅格
-        if (this.imginput != '' && this.imgurl != '') {
+        if (this.imginput != "" && this.imgurl != "") {
           this.dialogVisible = false;
           this.layerName = this.imginput;
           this.addRasterLayer({
@@ -255,10 +261,10 @@ export default {
             url: this.imgurl,
             id: this.imginput
           });
-          this.imgurl = this.imginput = this.shpinput = '';
+          this.imgurl = this.imginput = this.shpinput = "";
           this.$refs.upload.clearFiles();
         } else {
-          this.$message.error('未完善信息！');
+          this.$message.error("未完善信息！");
         }
       }
     },
@@ -267,14 +273,14 @@ export default {
       var x = [];
       var y = [];
       for (var i = 0; i < json.features.length; i++) {
-        if (typeof json.features[i].geometry.coordinates[0] == 'number') {
+        if (typeof json.features[i].geometry.coordinates[0] == "number") {
           array.push([
             json.features[i].geometry.coordinates[0],
             json.features[i].geometry.coordinates[1]
           ]);
         } else {
           if (
-            typeof json.features[i].geometry.coordinates[0][0][0] == 'number'
+            typeof json.features[i].geometry.coordinates[0][0][0] == "number"
           ) {
             for (
               var q = 0;
@@ -323,15 +329,15 @@ export default {
       if (map.getLayer(id)) return;
       map.addLayer({
         id: id,
-        type: 'raster',
+        type: "raster",
         source: {
-          type: 'raster',
+          type: "raster",
           tiles: [url],
           tileSize: 256,
           zoomOffset: 1
         },
         layout: {
-          visibility: visible ? 'visible' : 'none'
+          visibility: visible ? "visible" : "none"
         },
         minzoom,
         maxzoom
@@ -342,28 +348,28 @@ export default {
       this.$html2canvas(this.$refs.map, {
         backgroundColor: null
       }).then(canvas => {
-        let dataURL = canvas.toDataURL('image/png');
+        let dataURL = canvas.toDataURL("image/png");
         this.dataURL = dataURL;
       });
     },
     downs() {
-      if (this.imgName != '') {
+      if (this.imgName != "") {
         this.imagedialogVisible = false;
-        var alink = document.createElement('a');
+        var alink = document.createElement("a");
         alink.href = this.dataURL;
         alink.download = this.imgName; // 图片名
         alink.click();
-        this.dataURL = '';
-        this.imgName = '';
+        this.dataURL = "";
+        this.imgName = "";
       } else {
         this.$message({
-          message: '名称不能为空！',
-          type: 'warning'
+          message: "名称不能为空！",
+          type: "warning"
         });
       }
     },
     handleClose() {
-      this.dataURL = '';
+      this.dataURL = "";
       this.imagedialogVisible = false;
     }
   }
@@ -376,9 +382,9 @@ export default {
 }
 #map {
   position: absolute;
-  top: 0px;
+  top: 70px;
   bottom: 0px;
-  left: 0px;
+  left: 240px;
   right: 0px;
 }
 .calculation-box {
@@ -397,8 +403,8 @@ export default {
 }
 #top {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 70px;
+  left: 240px;
   width: 300px;
   height: 40px;
   background-color: #3f8cee;
@@ -407,7 +413,7 @@ export default {
 #bottom {
   position: absolute;
   bottom: 0px;
-  left: 0px;
+  left: 240px;
   width: 300px;
   height: 40px;
   background-color: #3f8cee;

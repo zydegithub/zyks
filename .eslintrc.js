@@ -38,9 +38,20 @@ module.exports = {
       "before": false,
       "after": true
     }],
-    "quotes": ["error", "single", {
-      "avoidEscape": true
-    }],
+    // "quotes": ["error", "single", {
+    //   "avoidEscape": true
+    // }],
+    "quotes": [1, "single"], //引号类型 `` "" ''
+    {
+      test: /\.vue$/,
+      loader: 'vue-loader',
+      options: vueLoaderConfig
+    },
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+    },
     // "curly": "error"
     "space-before-function-paren": ["error", "never"],
     "space-in-parens": ["error", "never"],
