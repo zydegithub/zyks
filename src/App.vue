@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'App'
+  name: "App"
 };
 </script>
 
@@ -52,5 +52,8 @@ i {
 }
 .el-input-group__prepend {
   padding: 0 14px !important;
+}
+.el-tabs__content {
+  padding-left: 40px !important;
 }
 </style>

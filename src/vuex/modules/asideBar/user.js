@@ -166,14 +166,7 @@ const actions = {
     callBack
   }) {
     UserService.editUser(data).then(res => {
-      if (res.isSuccess) {
-        context.commit('SET_MESSAGE', {
-          type: 'success',
-          message: '编辑用户成功。'
-        }, {
-          root: true
-        });
-        context.dispatch('getUserList');
+      if (res) {
         callBack(res);
       } else {
         context.commit('SET_MESSAGE', {
@@ -181,6 +174,21 @@ const actions = {
           message: '编辑用户失败。'
         }, {
           root: true
+        });
+      }
+    });
+  },
+  getlayers(context, {
+    data,
+    callBack
+  }) {
+    UserService.getlayers(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
         });
       }
     });

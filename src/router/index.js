@@ -8,7 +8,7 @@ import Router from 'vue-router';
 // import deleteTree from '@/components/deleteTree'
 // import nextTick from '@/components/nextTick';
 // import filp from '@/components/filp';
-// import flag from '@/components/flag';
+import layers from '@/components/layers';
 import Home from '@/components/Home';
 import mainMap from '@/components/mainMap';
 import login from '@/components/login';
@@ -46,6 +46,11 @@ export default new Router({
           path: '/personal',
           name: 'personal',
           component: personal
+        },
+        {
+          path: '/layers',
+          name: 'layers',
+          component: layers
         }
       ]
     }

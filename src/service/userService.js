@@ -11,17 +11,24 @@ class UserService {
   }
   async login(data) {
     return axios({
-      url: CONFIG.baseurl,
+      url: CONFIG.baseurl+"login",
       method: 'get',
       params: data
     });
   }
   async editUser(data) {
-    let result = await sysClient.getData('EditUser', data, true);
-
-    if (!result) return;
-
-    return result;
+    return axios({
+      url: CONFIG.baseurl+"login",
+      method: 'patch',
+      params: data
+    });
+  }
+  async getlayers(data) {
+    return axios({
+      url: CONFIG.baseurl+"layer",
+      method: 'get',
+      params: data
+    });
   }
   async getUserList(data) {
     let result = await sysClient.getData('GetUserListAsync', data, true);

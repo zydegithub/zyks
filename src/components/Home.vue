@@ -17,7 +17,7 @@
             <i class="el-icon-location"></i>
             <span>工具</span>
           </template>
-          <el-menu-item index="1-1">图层管理</el-menu-item>
+          <el-menu-item index="/layers">图层管理</el-menu-item>
           <el-menu-item index="1-2">数据采集</el-menu-item>
           <el-menu-item index="1-3">数据展示</el-menu-item>
         </el-submenu>

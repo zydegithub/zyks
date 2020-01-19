@@ -32,8 +32,8 @@ export default {
   name: "HelloWorld",
   data() {
     return {
-      username: "",
-      password: ""
+      username: "zy",
+      password: "123456"
     };
   },
   methods: {
