@@ -11,7 +11,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       lacationInfo: {
         lng: "0.0000",
@@ -25,12 +25,12 @@ export default {
   props: {
     map: Object
   },
-  mounted() {
+  mounted () {
     this.map.on("mousemove", this.mouseMove);
     this.map.on("zoomend", this.zoomEnd);
   },
   methods: {
-    mouseMove(e) {
+    mouseMove (e) {
       if (e.lngLat.lng.toFixed(4) > 0) {
         this.lacationInfo.lng = "东经:" + e.lngLat.lng.toFixed(4);
       } else {
@@ -42,7 +42,7 @@ export default {
         this.lacationInfo.lat = "南纬:" + Math.abs(e.lngLat.lat.toFixed(4));
       }
     },
-    zoomEnd(e) {
+    zoomEnd (e) {
       this.lacationInfo.zoom = e.target.getZoom().toFixed(2);
       // this.lacationInfo.scale = this.$util.commonUtil.calculateScale(
       //   this.map,
@@ -60,7 +60,7 @@ export default {
   background: rgba(255, 255, 255, 0.4);
   position: absolute;
   bottom: 0;
-  left: 240px;
+  left: 0px;
   right: 0px;
   font-size: 14px;
 }

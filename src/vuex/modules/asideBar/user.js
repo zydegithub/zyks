@@ -82,46 +82,6 @@ const mutations = {
 
 // 异步的操作状态
 const actions = {
-  testAuthory(context) {
-    UserService.testAuthory().then(res => {
-      if (!res.data.IsSuccess) {
-        iView.Notice.info({
-          title: '系统通知',
-          desc: res.data.Message,
-          duration: 0
-        });
-        context.commit(TYPES.SET_ISLOGIN, false);
-        context.commit(TYPES.SET_NOAUTHMESS, res.data.Message);
-      } else {
-        context.commit(TYPES.SET_ISLOGIN, true);
-        context.commit(TYPES.SET_NOAUTHMESS, '');
-      }
-    }, error => {
-      // 异常监听
-      // return error
-      console.log(error);
-    });
-  },
-  getUserList(context) {
-    UserService.getUserList([state.userKeyword, state.userCurrPage, state.userPageSize]).then(res => {
-      if (res == null) {
-        context.commit('SET_MESSAGE', {
-          type: 'info',
-          message: '用户为空。'
-        }, {
-          root: true
-        });
-        return;
-      }
-      var list = JSON.parse(res.listJson);
-      context.commit(TYPES.SET_USERLIST, list);
-      context.commit(TYPES.SET_USERCOUNT, res.totalCount);
-    }, error => {
-      // 异常监听
-      // return error
-      console.log(error);
-    });
-  },
   login(context, {
     data,
     callBack
@@ -193,6 +153,51 @@ const actions = {
       }
     });
   },
+  addlayers(context, {
+    data,
+    callBack
+  }) {
+    UserService.addlayers(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '添加失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  addfields(context, {
+    data,
+    callBack
+  }) {
+    UserService.addfields(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '添加失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  getfields(context, {
+    data,
+    callBack
+  }) {
+    UserService.getfields(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
   updatePassword(context, {
     data,
     callBack
@@ -217,12 +222,6 @@ const actions = {
       }
     });
   },
-  pageUserChange(context, num) {
-    context.commit(TYPES.SET_USERCURRPAGE, num);
-    return context.dispatch('getUserList');
-  },
-
-
   deleteUser(context, name) {
     UserService.deleteUser([name]).then(res => {
       if (res) {

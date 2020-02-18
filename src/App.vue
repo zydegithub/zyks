@@ -56,4 +56,7 @@ i {
 .el-tabs__content {
   padding-left: 40px !important;
 }
+.el-dialog__body {
+  padding: 30px 20px 0px 20px;
+}
 </style>

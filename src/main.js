@@ -14,11 +14,13 @@ import 'iview/dist/styles/iview.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import preview from 'vue-photo-preview';
 import 'vue-photo-preview/dist/skin.css';
+import util from "./utils";
 
 Vue.use(Vuetify);
 Vue.use(ElementUI);
 Vue.use(iView);
 Vue.use(preview);
+Vue.prototype.$util = util;
 Vue.prototype.$html2canvas = html2canvas;
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$axios = axios;

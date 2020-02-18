@@ -12,7 +12,7 @@ import layers from '@/components/layers';
 import Home from '@/components/Home';
 import mainMap from '@/components/mainMap';
 import login from '@/components/login';
-import axios from '@/components/axios';
+import collectionData from '@/components/collectionData';
 import personal from '@/components/personal';
 
 Vue.use(Router);
@@ -38,9 +38,9 @@ export default new Router({
           component: mainMap
         },
         {
-          path: '/axios',
-          name: 'axios',
-          component: axios
+          path: '/collectionData',
+          name: 'collectionData',
+          component: collectionData
         },
         {
           path: '/personal',

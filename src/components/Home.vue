@@ -2,23 +2,14 @@
   <el-container id="home">
     <el-aside width="240px">
       <div id="icon"></div>
-      <el-menu
-        :default-active="this.$router.path"
-        router
-        default-active="2"
-        class="el-menu-vertical-demo"
-        background-color="#545c64"
-        margin-top="30px"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-      >
+      <el-menu :default-active="this.$router.path" router class="el-menu-vertical-demo" background-color="#545c64" margin-top="30px" text-color="#fff" active-text-color="#ffd04b">
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-location"></i>
             <span>工具</span>
           </template>
           <el-menu-item index="/layers">图层管理</el-menu-item>
-          <el-menu-item index="1-2">数据采集</el-menu-item>
+          <el-menu-item index="/collectionData">数据采集</el-menu-item>
           <el-menu-item index="1-3">数据展示</el-menu-item>
         </el-submenu>
         <el-menu-item index="/mainMap">
@@ -41,7 +32,10 @@
 
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
-        <el-dropdown @command="handleCommand">
+        <div class="titleDiv">
+          <span>一站式地图应用平台</span>
+        </div>
+        <el-dropdown @command="handleCommand" placement="bottom">
           <div class="loginDiv">
             <span>{{ this.username }}</span>
           </div>
@@ -62,7 +56,7 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  data() {
+  data () {
     const item = {
       date: "2016-05-02",
       name: "王小虎",
@@ -72,27 +66,30 @@ export default {
       tableData: Array(10).fill(item)
     };
   },
-  created() {},
-  mounted() {},
+  created () { },
+  mounted () { },
   computed: {
     ...mapGetters({
       username: "username"
     })
   },
   methods: {
-    handleCommand(command) {
+    handleCommand (command) {
       if (command == "exit") {
         this.$router.push({
           name: "login"
         });
       } else {
+        this.$router.push({
+          name: "personal"
+        });
       }
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 #home {
   position: absolute;
   right: 0px;
@@ -101,8 +98,8 @@ export default {
   bottom: 0px;
 }
 .el-header {
-  background-color: #fff;
-  color: #333;
+  background-color: #545c64;
+  color: #fff;
   line-height: 70px;
   box-shadow: 2px 2px 5px #888888;
   height: 70px !important;
@@ -116,12 +113,25 @@ export default {
   color: #333;
   text-align: left;
 }
+.titleDiv {
+  text-align: left;
+  font-size: 12px;
+  float: left;
+  font-size: 22px;
+  margin-left: 40px;
+}
 .loginDiv {
   height: 70px;
   padding: 0px 20px;
+  text-align: right;
+  font-size: 12px;
+  color: #fff;
 }
 .loginDiv:hover {
   background-color: rgba(0, 0, 0, 0.025);
+}
+.el-main {
+  padding: 0px;
 }
 </style>
 
