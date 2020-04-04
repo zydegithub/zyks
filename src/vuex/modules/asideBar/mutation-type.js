@@ -7,6 +7,10 @@ export const userCurrPage = 'userCurrPage';
 export const userPageSize = 'userPageSize';
 export const isLogin = 'isLogin';
 export const noAuthMess = 'noAuthMess';
+export const layerId = 'layerId';
+export const usedIds = 'usedIds';
+export const usedId = 'usedId';
+export const addLayers = 'addLayers';
 
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_PASSWORD = 'SET_PASSWORD';
@@ -17,7 +21,10 @@ export const SET_USERPAGESIZE = 'SET_USERPAGESIZE';
 export const SET_USERKEYWORD = 'SET_USERKEYWORD';
 export const SET_ISLOGIN = 'SET_ISLOGIN';
 export const SET_NOAUTHMESS = 'SET_NOAUTHMESS';
-
+export const SET_LAYERID = 'SET_LAYERID';
+export const SET_USEDIDS = 'SET_USEDIDS';
+export const SET_USEDID = 'SET_USEDID';
+export const SET_ADDLAYERS = 'SET_ADDLAYERS';
 
 export const login = 'login';
 export const updatePassword = 'updatePassword';

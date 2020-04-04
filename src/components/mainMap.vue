@@ -3,15 +3,24 @@
     <div id="map" ref="map"></div>
     <MousePostion v-if="mapbuild" :map="map"></MousePostion>
     <toolbar :map="map" :dialogVisible="dialogVisible"></toolbar>
-    <treeLayer :map="map" :layerName="layerName" :shpNames="shpNames"></treeLayer>
+    <treeLayer :map="map" @rightBtns="rightBtns" :layerNames="layerNames" :shpNames="shpNames"></treeLayer>
+    <addData v-if="isAddLayer" @closeData="closeData" @layers="getLayers"></addData>
+    <uniqueValue :map="map" v-if="showUniquePanel" @closeUnique="closeUnique"></uniqueValue>
+    <classifyValue :map="map" v-if="showClassifyPanel" @closeClassify="closeClassify"></classifyValue>
+    <layerHome :map="map" v-if="showHomePanel" @closeHome="closeHome"></layerHome>
+    <div id="rightbar">
+      <div v-if="rightMenusShow">
+        <div v-for="(item, index) in rightMenus" :key="index" id="ebs" @click="clickRightBtn(item.click)">
+          <i :class="item.icon"></i>
+          {{ item.label }}
+        </div>
+      </div>
+    </div>
     <div id="top">
       <span class="topSpan">图层列表</span>
+      <i class="el-icon-circle-plus-outline" style="float:right;line-height:50px;margin-right:10px;color:#fff;font-size:24px;cursor:pointer" @click="addData"></i>
     </div>
-    <!-- <div class="calculation-box" @click="draw">
-      <p>Draw a polygon using the draw tools.</p>
-      <div id="calculated-area"></div>
-    </div>-->
-    <el-dialog title="添加数据" :visible.sync="dialogVisible" width="30%" height="40%">
+    <!-- <el-dialog title="添加数据" :visible.sync="dialogVisible" width="30%" height="40%">
       <el-tabs v-model="activeName">
         <el-tab-pane label="添加矢量服务" name="first">
           <div>
@@ -20,12 +29,7 @@
           </div>
           <div style="margin-top:10px">
             <span>上传数据:</span>
-            <el-upload
-              ref="upload"
-              class="itembtn el-button"
-              :action="uploadShp"
-              :on-success="uploadShpSuccess"
-            >
+            <el-upload ref="upload" class="itembtn el-button" :action="uploadShp" :on-success="uploadShpSuccess">
               <div class="el-upload__text">
                 <span class="text">添加shp(zip)</span>
               </div>
@@ -48,15 +52,8 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addGeoJson(geojson)">确 定</el-button>
       </span>
-    </el-dialog>
-    <el-dialog
-      title="地图出图"
-      :visible.sync="imagedialogVisible"
-      width="30%"
-      :modal="false"
-      :before-close="handleClose"
-      id="dialog"
-    >
+    </el-dialog> -->
+    <el-dialog title="地图出图" :visible.sync="imagedialogVisible" width="30%" :modal="false" :before-close="handleClose" id="dialog">
       <div class="imgname">
         <span>出图名称:</span>
         <el-input v-model="imgName" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
@@ -70,43 +67,103 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import MousePostion from "./MousePosition";
 import toolbar from "./toolbar";
 import treeLayer from "./treeLayer";
+import addData from "./addData";
+import uniqueValue from "./uniqueValue";
+import classifyValue from "./classifyValue";
+import layerHome from "./layerHome";
 export default {
-  data() {
+  data () {
     return {
       mapbuild: false,
       map: null,
       measureControl: null,
       dialogVisible: false,
       imagedialogVisible: false,
-      activeName: "first",
-      shpinput: "6666",
-      imginput: "",
-      imgurl: "",
-      uploadShp: CONFIG.processServiceURL + "file/uploadShp",
+      //   activeName: "first",
+      //   shpinput: "6666",
+      //   imginput: "",
+      //   imgurl: "",
+      //   uploadShp: CONFIG.processServiceURL + "file/uploadShp",
       newgeojson: "",
       geojson: "",
       xmin: "",
       xmax: "",
       ymin: "",
       ymax: "",
-      layerName: "",
+      layerNames: [],
       shpNames: [],
+      haveLayerIds: [],
       dataURL: "",
-      imgName: ""
+      imgName: "",
+      isAddLayer: false,
+      layerGeojson: [],
+      layerName: [],
+      layerId: [],
+      rightMenusShow: false,
+      layerData: "",
+      layerNode: "",
+      showUniquePanel: false,
+      showClassifyPanel: false,
+      showHomePanel: false,
+      rightMenus: [
+        {
+          label: '唯一值渲染',
+          icon: 'el-icon-star-off',
+          click: () => {
+            this.panelShow('unique');
+          }
+        },
+        {
+          label: '分类渲染',
+          icon: 'el-icon-star-off',
+          click: () => {
+            this.panelShow('classify');
+          }
+        },
+        {
+          label: '缩放至图层',
+          icon: 'el-icon-edit-outline',
+          click: () => {
+            this.fitMapLayer();
+          }
+        },
+        {
+          label: '复制图层',
+          icon: 'el-icon-copy-document',
+          click: () => {
+            this.panelShow('copy');
+          }
+        },
+        {
+          label: '删除图层',
+          icon: 'el-icon-folder-remove',
+          click: () => {
+            this.panelShow('delete');
+          }
+        }
+      ],
     };
   },
-  mounted() {
+  mounted () {
     this.initMap();
+  },
+  destroyed () {
+    this.SET_USEDIDS([])
+  },
+  computed: {
+    ...mapGetters({
+      usedId: "usedId",
+      addLayers: "addLayers"
+    })
   },
   watch: {
     newgeojson: {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         try {
-          debugger;
           this.geojson = JSON.parse(val);
         } catch (e) {
           console.log("请输入正确的geojson");
@@ -115,24 +172,27 @@ export default {
       deep: true,
       immediate: false
     },
-    pointcolor: function(val, old) {
-      debugger;
+    pointcolor: function (val, old) {
       this.map.setPaintProperty("drawpointlayer", "circle-color", val);
     },
-    linecolor: function(val, old) {},
-    polygoncolor: function(val, old) {
-      debugger;
+    linecolor: function (val, old) { },
+    polygoncolor: function (val, old) {
       this.map.setPaintProperty("drawpolygonlayer", "fill-color", val);
     }
   },
   components: {
     MousePostion,
     toolbar,
-    treeLayer
+    treeLayer,
+    addData,
+    uniqueValue,
+    classifyValue,
+    layerHome
   },
   methods: {
-    ...mapActions(["getAsideBar"]),
-    initMap() {
+    ...mapMutations(["SET_USEDID", "SET_USEDIDS", "SET_ADDLAYERS"]),
+    ...mapActions(["getlayersId"]),
+    initMap () {
       if (!mapboxgl.supported()) {
         this.$Message.warning({
           content: "您的浏览器不支持WebGL,请升级到最新版本。",
@@ -142,7 +202,7 @@ export default {
       }
       this.map = new mapboxgl.Map({
         container: "map",
-        style: "http://yjqz.geo-compass.com/api/v1/styles/1",
+        style: style,
         center: [100, 30],
         zoom: 3,
         epsg: "EPSG:4490",
@@ -151,153 +211,194 @@ export default {
       this.$previewRefresh();
       this.map.on("load", async () => {
         this.mapbuild = true;
+        if (this.usedId != "" && this.usedId != undefined) {
+          this.getlayersId({
+            data: { layerId: this.usedId },
+            callBack: res => {
+              this.layerGeojson.push(res.data.user[0].layerGeojson);
+              this.layerName.push(res.data.user[0].layerName);
+              this.layerId.push(res.data.user[0].layerId)
+              this.getLayers(this.layerGeojson, this.layerName, this.layerId)
+              this.SET_USEDID("")
+            }
+          })
+        }
       });
       this.measureControl = new MeasureControl({
         isDistance: true,
         isArea: true,
         map: this.map
       });
-
       window.map = this.map;
     },
-    draw() {
+    draw () {
       this.map.on("click", this.measureControl._onClick);
       this.map.on("dblclick", this.measureControl._onDblClick);
       this.map.on("mousemove", this.measureControl._onMousemove);
       this.measureControl._onMeasureAreaStart();
     },
-    showDialog() {
-      this.dialogVisible = !this.dialogVisible;
+    // 点击右侧菜单
+    clickRightBtn (click) {
+      this.rightMenusShow = false;
+      click();
     },
-    // 上传成功事件
-    uploadShpSuccess(res) {
-      debugger;
-      let data = JSON.parse(res.data);
-      this.geojsonEditShow = true;
-      this.newgeojson = data.geojson; // 触发加载geojson事件
+    // 右侧按钮
+    rightBtns (node, data, top, bottom) {
+      if (this.layerData == "" || this.layerData == data) {
+        this.rightMenusShow = !this.rightMenusShow
+      }
+      this.layerData = data
+      this.SET_USEDID(data.layerId)
+      this.layerNode = node
+      var btnsHeight = document.getElementById('rightbar').offsetHeight;
+      if (btnsHeight < bottom) {
+        document.getElementById('rightbar').style.top = '';
+        document.getElementById('rightbar').style.bottom = 0 + 'px';
+      } else {
+        document.getElementById('rightbar').style.bottom = '';
+        document.getElementById('rightbar').style.top = top + 'px';
+      }
     },
-    addGeoJson(json) {
-      debugger;
-      // 加载矢量
-      if (json != "") {
-        this.getbounds(json);
-        if (this.shpinput != "" && this.geojson != "") {
-          var shp = this.map.getLayer(this.shpinput);
-          if (shp != undefined) {
-            this.shpinput = this.shpinput + "1";
-          }
-          this.dialogVisible = false;
-          if (this.map.getSource("national-park") != null) {
-            this.map.getSource("national-park").setData(json);
-          } else {
-            this.map.addSource("national-park", {
-              type: "geojson",
-              data: json
-            });
-          }
-          this.map.addLayer({
-            id: this.shpinput,
-            layout: {
-              visibility: "visible"
-            },
-            type: "fill",
-            source: "national-park",
-            paint: {
-              "fill-color": "#888888",
-              "fill-opacity": 0.4,
-              "fill-outline-color": "#888888"
-            },
-            filter: ["==", "$type", "Polygon"]
-          });
-          this.map.addLayer({
-            id: "drawpointlayer",
-            type: "circle",
-            layout: {
-              visibility: "visible"
-            },
-            source: "national-park",
-            paint: {
-              "circle-radius": 6,
-              "circle-color": "#B42222"
-            },
-            filter: ["==", "$type", "Point"]
-          });
-          this.map.addLayer({
-            id: "drawlinelayer",
-            type: "line",
-            source: "national-park",
-            layout: {
-              visibility: "visible"
-            },
-            paint: {
-              "line-width": 6,
-              "line-color": "#B42222",
-              "line-opacity": 0.8
-            },
-            filter: ["==", "$type", "LineString"]
-          });
-          this.layerName = this.shpinput;
+    fitMapLayer () {
+      this.getlayersId({
+        data: { layerId: this.usedId },
+        callBack: res => {
+          this.layerGeojson = JSON.parse(res.data.user[0].layerGeojson);
+          this.getbounds(this.layerGeojson)
           this.map.fitBounds(
             [
               [this.xmin, this.ymax],
               [this.xmax, this.ymin]
             ],
             {
-              padding: 200
+              padding: 50
             }
           );
-          this.imgurl = this.imginput = this.shpinput = "";
-          this.$refs.upload.clearFiles();
-        } else {
-          this.$message.error("未完善信息！");
         }
-      } else {
-        // 加载栅格
-        if (this.imginput != "" && this.imgurl != "") {
-          this.dialogVisible = false;
-          this.layerName = this.imginput;
-          this.addRasterLayer({
-            map: this.map,
-            url: this.imgurl,
-            id: this.imginput
-          });
-          this.imgurl = this.imginput = this.shpinput = "";
-          this.$refs.upload.clearFiles();
-        } else {
-          this.$message.error("未完善信息！");
+      })
+    },
+    panelShow (type, isChangeSource) {
+      switch (type) {
+        case 'unique':
+          this.showUniquePanel = true;
+          break;
+        case 'classify':
+          this.showClassifyPanel = true;
+          break;
+        case 'notation':
+          this.notationPanel = true;
+          break;
+        case 'delete':
+          this.dellayers();
+          break;
+        case 'copy':
+          this.coplayers();
+          break;
+        case 'new':
+          this.isChangeSource = isChangeSource;
+          this.createLayerShow = true;
+          break;
+      }
+    },
+    dellayers () {
+      const parent = this.layerNode.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === this.layerData.id);
+      children.splice(index, 1);
+      this.map.removeLayer(this.layerData.label);
+      this.map.removeSource(this.layerData.label);
+    },
+    getLayers (geojson, name, id) {
+      this.layerNames = []
+      if (geojson.length > 0) {
+        for (const key in geojson) {
+          this.layerNames.push({ 'name': name[key], 'id': id[key] })
+          if (geojson[key] != "") {
+            var json = JSON.parse(geojson[key]);
+            this.map.addSource(name[key], {
+              type: "geojson",
+              data: json
+            });
+            var properties = json.features[0].properties
+            if (json.features[0].geometry.type.indexOf("Point") != -1) {
+              this.map.addLayer({
+                id: properties.layerName,
+                type: "circle",
+                layout: {
+                  visibility: "visible"
+                },
+                source: name[key],
+                paint: {
+                  "circle-radius": 6,
+                  "circle-color": "#B42222"
+                },
+                filter: ["==", "layerName", properties.layerName]
+              });
+              this.addLayers.push(properties.layerName)
+              this.SET_ADDLAYERS(this.addLayers)
+            }
+            if (json.features[0].geometry.type.indexOf("Line") != -1) {
+              this.map.addLayer({
+                id: properties.layerName,
+                type: "line",
+                source: name[key],
+                layout: {
+                  visibility: "visible"
+                },
+                paint: {
+                  "line-width": 6,
+                  "line-color": "#B42222",
+                  "line-opacity": 0.8
+                },
+                filter: ["==", "layerName", properties.layerName]
+              });
+              this.addLayers.push(properties.layerName)
+              this.SET_ADDLAYERS(this.addLayers)
+            }
+            if (json.features[0].geometry.type.indexOf("Polygon") != -1) {
+              this.map.addLayer({
+                id: properties.layerName,
+                layout: {
+                  visibility: "visible"
+                },
+                type: "fill",
+                source: name[key],
+                paint: {
+                  "fill-color": "#888888",
+                  "fill-opacity": 0.4,
+                  "fill-outline-color": "#888888"
+                },
+                filter: ["==", "layerName", properties.layerName]
+              });
+              this.addLayers.push(properties.layerName)
+              this.SET_ADDLAYERS(this.addLayers)
+            }
+          } else {
+            this.$message.error("未完善信息！");
+          }
         }
       }
     },
-    getbounds(json) {
+    getbounds (json) {
       var array = [];
       var x = [];
       var y = [];
       for (var i = 0; i < json.features.length; i++) {
-        if (typeof json.features[i].geometry.coordinates[0] == "number") {
+        if (typeof json.features[i].geometry.coordinates[0] == "number" || typeof parseFloat(json.features[i].geometry.coordinates[0]) == "number") {
           array.push([
             json.features[i].geometry.coordinates[0],
             json.features[i].geometry.coordinates[1]
           ]);
         } else {
-          if (
-            typeof json.features[i].geometry.coordinates[0][0][0] == "number"
-          ) {
-            for (
-              var q = 0;
-              q < json.features[i].geometry.coordinates[0].length;
-              q++
-            ) {
+          if (typeof json.features[i].geometry.coordinates[0][0][0] == "number" || typeof parseFloat(json.features[i].geometry.coordinates[0][0][0]) == "number") {
+            for (var q = 0; q < json.features[i].geometry.coordinates[0].length; q++) {
               array.push([
                 json.features[i].geometry.coordinates[0][q][0],
                 json.features[i].geometry.coordinates[0][q][1]
               ]);
             }
           } else {
-            for (
-              var k = 0;
-              k < json.features[i].geometry.coordinates[0][0].length;
-              k++
-            ) {
+            for (var k = 0; k < json.features[i].geometry.coordinates[0][0].length; k++) {
               array.push(json.features[i].geometry.coordinates[0][0][k]);
             }
           }
@@ -307,18 +408,18 @@ export default {
         x.push(array[j][0]);
         y.push(array[j][1]);
       }
-      x.sort(function(a, b) {
+      x.sort(function (a, b) {
         return a - b;
       });
       this.xmin = x[0];
       this.xmax = x[x.length - 1];
-      y.sort(function(a, b) {
+      y.sort(function (a, b) {
         return a - b;
       });
       this.ymin = y[0];
       this.ymax = y[y.length - 1];
     },
-    addRasterLayer({
+    addRasterLayer ({
       map,
       url,
       id,
@@ -343,7 +444,7 @@ export default {
         maxzoom
       });
     },
-    saveImage() {
+    saveImage () {
       this.imagedialogVisible = true;
       this.$html2canvas(this.$refs.map, {
         backgroundColor: null
@@ -352,7 +453,7 @@ export default {
         this.dataURL = dataURL;
       });
     },
-    downs() {
+    downs () {
       if (this.imgName != "") {
         this.imagedialogVisible = false;
         var alink = document.createElement("a");
@@ -368,9 +469,25 @@ export default {
         });
       }
     },
-    handleClose() {
+    handleClose () {
       this.dataURL = "";
       this.imagedialogVisible = false;
+    },
+    addData () {
+      this.isAddLayer = true
+      var that = this
+    },
+    closeData () {
+      this.isAddLayer = false
+    },
+    closeUnique () {
+      this.showUniquePanel = false
+    },
+    closeClassify () {
+      this.showClassifyPanel = false
+    },
+    closeHome () {
+      this.showHomePanel = false
     }
   }
 };
@@ -404,9 +521,9 @@ export default {
 #top {
   position: absolute;
   top: 70px;
-  left: 240px;
-  width: 300px;
-  height: 40px;
+  left: 239px;
+  width: 301px;
+  height: 50px;
   background-color: #3f8cee;
   text-align: left;
 }
@@ -420,9 +537,9 @@ export default {
 }
 .topSpan {
   color: #fff;
-  font-size: 18px;
+  font-size: 20px;
   margin-left: 20px;
-  line-height: 40px;
+  line-height: 50px;
 }
 .imgname {
   float: left;
@@ -434,5 +551,34 @@ export default {
 }
 #dialog {
   z-index: 50 !important;
+}
+#rightbar {
+  z-index: 2;
+  position: absolute;
+  left: 538px;
+  width: 130px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #fff;
+  user-select: none;
+}
+#ebs {
+  z-index: 2;
+  width: 130px;
+  height: 30px;
+  display: block;
+  padding-top: 3px;
+  border: 1px solid #dddddd;
+  border-bottom: 0px;
+  text-align: left;
+}
+#ebs:last-child {
+  border-bottom: 1px solid #dddddd;
+}
+i {
+  float: left;
+  margin-left: 6px;
+  margin-right: 8px;
+  margin-top: 3px;
 }
 </style>

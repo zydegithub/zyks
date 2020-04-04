@@ -42,7 +42,7 @@ export default {
   height: 40px;
 }
 i {
-  font-size: 20px;
+  font-size: 16px;
 }
 .popup_attr_property_box {
   font-family: Microsoft YaHei, Helvetica, Arial, sans-serif;
@@ -58,5 +58,38 @@ i {
 }
 .el-dialog__body {
   padding: 30px 20px 0px 20px;
+}
+.el-card__body {
+  padding: 24px;
+}
+#drawData .el-dialog__wrapper {
+  position: fixed !important;
+  top: 0px !important;
+  right: 20px !important;
+  bottom: auto !important;
+  left: auto !important;
+}
+#systemData .el-table__header-wrapper {
+  background-color: #dddddd !important;
+}
+.el-table .hidden-columns {
+  display: none !important;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.el-form-item__label {
+  text-align: left !important;
+  font-size: 16px;
+}
+.el-form-item {
+  margin-top: 20px !important;
 }
 </style>

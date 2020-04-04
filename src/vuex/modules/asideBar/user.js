@@ -15,7 +15,11 @@ const state = {
   userCurrPage: 1,
   userPageSize: 5,
   isLogin: true, // 是否可以登录
-  noAuthMess: '' // 无权限时信息
+  noAuthMess: '', // 无权限时信息
+  layerId: 1,
+  usedIds: [],
+  usedId: '',
+  addLayers: []
 };
 
 
@@ -44,8 +48,19 @@ const getters = {
   },
   [TYPES.noAuthMess]: state => {
     return state.noAuthMess;
+  },
+  [TYPES.layerId]: state => {
+    return state.layerId;
+  },
+  [TYPES.usedIds]: state => {
+    return state.usedIds;
+  },
+  [TYPES.usedId]: state => {
+    return state.usedId;
+  },
+  [TYPES.addLayers]: state => {
+    return state.addLayers;
   }
-
 };
 
 // 同步的操作状态
@@ -77,6 +92,18 @@ const mutations = {
   },
   [TYPES.SET_NOAUTHMESS](state, noAuthMess) {
     state.noAuthMess = noAuthMess;
+  },
+  [TYPES.SET_LAYERID](state, layerId) {
+    state.layerId = layerId;
+  },
+  [TYPES.SET_USEDIDS](state, usedIds) {
+    state.usedIds = usedIds;
+  },
+  [TYPES.SET_USEDID](state, usedId) {
+    state.usedId = usedId;
+  },
+  [TYPES.SET_ADDLAYERS](state, addLayers) {
+    state.usedId = addLayers;
   }
 };
 
@@ -153,6 +180,87 @@ const actions = {
       }
     });
   },
+  getlayersId(context, {
+    data,
+    callBack
+  }) {
+    UserService.getlayersId(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  getlayersState(context, {
+    data,
+    callBack
+  }) {
+    UserService.getlayersState(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  editLayer(context, {
+    data,
+    callBack
+  }) {
+    UserService.editLayer(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        context.commit('SET_MESSAGE', {
+          type: 'error',
+          message: '编辑图层失败。'
+        }, {
+          root: true
+        });
+      }
+    });
+  },
+  editLayerName(context, {
+    data,
+    callBack
+  }) {
+    UserService.editLayerName(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        context.commit('SET_MESSAGE', {
+          type: 'error',
+          message: '编辑图层失败。'
+        }, {
+          root: true
+        });
+      }
+    });
+  },
+  dellayer(context, {
+    data,
+    callBack
+  }) {
+    UserService.dellayer(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        context.commit('SET_MESSAGE', {
+          type: 'error',
+          message: '删除图层失败。'
+        }, {
+          root: true
+        });
+      }
+    });
+  },
   addlayers(context, {
     data,
     callBack
@@ -188,6 +296,36 @@ const actions = {
     callBack
   }) {
     UserService.getfields(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  delfields(context, {
+    data,
+    callBack
+  }) {
+    UserService.delfields(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+        iView.Notice.error({
+          title: '登录失败',
+          desc: res.resultStatueCode
+        });
+      }
+    });
+  },
+  editfields(context, {
+    data,
+    callBack
+  }) {
+    UserService.editfields(data).then(res => {
       if (res) {
         callBack(res);
       } else {
@@ -241,7 +379,19 @@ const actions = {
         });
       }
     });
-  }
+  },
+  uploadIMG(context, {
+    data,
+    callBack
+  }) {
+    UserService.uploadIMG(data).then(res => {
+      if (res) {
+        callBack(res);
+      } else {
+
+      }
+    });
+  },
 };
 
 export default {

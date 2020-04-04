@@ -7,7 +7,7 @@ import Router from 'vue-router';
 // import layer from '@/components/layer'
 // import deleteTree from '@/components/deleteTree'
 // import nextTick from '@/components/nextTick';
-// import filp from '@/components/filp';
+import homePage from '@/components/homePage';
 import layers from '@/components/layers';
 import Home from '@/components/Home';
 import mainMap from '@/components/mainMap';
@@ -33,6 +33,11 @@ export default new Router({
       name: 'Home',
       component: Home,
       children: [{
+          path: '/homePage',
+          name: 'homePage',
+          component: homePage
+        },
+        {
           path: '/mainMap',
           name: 'mainMap',
           component: mainMap

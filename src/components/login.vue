@@ -10,12 +10,7 @@
         </el-input>
       </div>
       <div class="pwd">
-        <el-input
-          placeholder="密码"
-          v-model="password"
-          @keyup.enter.native="userLogin"
-          type="password"
-        >
+        <el-input placeholder="密码" v-model="password" @keyup.enter.native="userLogin" type="password">
           <template slot="prepend">
             <i class="el-icon-lock"></i>
           </template>
@@ -30,7 +25,7 @@
 import { mapMutations, mapActions } from "vuex";
 export default {
   name: "HelloWorld",
-  data() {
+  data () {
     return {
       username: "zy",
       password: "123456"
@@ -39,7 +34,7 @@ export default {
   methods: {
     ...mapMutations(["SET_USERNAME"]),
     ...mapActions(["login"]),
-    userLogin() {
+    userLogin () {
       var that = this;
       this.login({
         data: { username: this.username, password: this.password },
@@ -52,7 +47,7 @@ export default {
               duration: 1.5
             });
             that.$router.push({
-              name: "Home"
+              name: "homePage"
             });
             that.SET_USERNAME(that.username);
           } else {

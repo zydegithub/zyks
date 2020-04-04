@@ -2,23 +2,22 @@
   <el-container id="home">
     <el-aside width="240px">
       <div id="icon"></div>
-      <el-menu :default-active="this.$router.path" router class="el-menu-vertical-demo" background-color="#545c64" margin-top="30px" text-color="#fff" active-text-color="#ffd04b">
-        <el-submenu index="1">
+      <el-menu :default-active="this.$route.path" router class="el-menu-vertical-demo" background-color="#545c64" margin-top="30px" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu-item index="/homePage">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">首页</span>
+        </el-menu-item>
+        <el-submenu index="2">
           <template slot="title">
             <i class="el-icon-location"></i>
-            <span>工具</span>
+            <span>数据管理</span>
           </template>
           <el-menu-item index="/layers">图层管理</el-menu-item>
           <el-menu-item index="/collectionData">数据采集</el-menu-item>
-          <el-menu-item index="1-3">数据展示</el-menu-item>
         </el-submenu>
         <el-menu-item index="/mainMap">
           <i class="el-icon-menu"></i>
-          <span slot="title">地图出图</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <i class="el-icon-document"></i>
-          <span slot="title">导航三</span>
+          <span slot="title">数据展示</span>
         </el-menu-item>
         <el-submenu index="4">
           <template slot="title">
@@ -57,13 +56,7 @@
 import { mapGetters } from "vuex";
 export default {
   data () {
-    const item = {
-      date: "2016-05-02",
-      name: "王小虎",
-      address: "上海市普陀区金沙江路 1518 弄"
-    };
     return {
-      tableData: Array(10).fill(item)
     };
   },
   created () { },
