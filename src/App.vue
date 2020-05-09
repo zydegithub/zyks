@@ -92,4 +92,28 @@ i {
 .el-form-item {
   margin-top: 20px !important;
 }
+.el-menu {
+  background-color: rgba(0, 0, 0, 0);
+  border-right: 0px;
+}
+.el-submenu__title:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.el-menu-item:focus,
+.el-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+element.style {
+    color: #fff;
+}
+.el-tabs--left .el-tabs__item.is-left {
+    text-align: right;
+}
+.el-tabs--left .el-tabs__item.is-left, .el-tabs--left .el-tabs__item.is-right, .el-tabs--right .el-tabs__item.is-left, .el-tabs--right .el-tabs__item.is-right {
+    display: block;
+}
+.el-tabs__item{
+  color: #fff!important;
+}
 </style>

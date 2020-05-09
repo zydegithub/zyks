@@ -1,8 +1,21 @@
 <template>
   <el-container id="home">
     <el-aside width="240px">
-      <div id="icon"></div>
-      <el-menu :default-active="this.$route.path" router class="el-menu-vertical-demo" background-color="#545c64" margin-top="30px" text-color="#fff" active-text-color="#ffd04b">
+      <div id="icon">
+        <img
+          src="static/img/earth2.png"
+          width="50px"
+        />
+      </div>
+      <el-menu
+        :default-active="this.$route.path"
+        router
+        class="el-menu-vertical-demo"
+        margin-top="30px"
+        text-color="#fff"
+        font-size="26px"
+        active-text-color="#ffd04b"
+      >
         <el-menu-item index="/homePage">
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
@@ -32,11 +45,24 @@
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
         <div class="titleDiv">
-          <span>一站式地图应用平台</span>
+          <span>一站式地图服务应用平台</span>
         </div>
-        <el-dropdown @command="handleCommand" placement="bottom">
+        <el-dropdown
+          @command="handleCommand"
+          placement="bottom"
+        >
+          <!-- <div class="headerDiv">
+            <img
+              src="static/img/header.jpg"
+              style="width:40px;border-radius:50%;"
+            />
+          </div> -->
           <div class="loginDiv">
-            <span>{{ this.username }}</span>
+            <img
+              src="static/img/header.jpg"
+              style="width:40px;border-radius:50%;vertical-align:middle;margin-right:10px"
+            />
+            <span>你好 {{ this.username }}</span>
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="update">个人中心</el-dropdown-item>
@@ -89,9 +115,10 @@ export default {
   left: 0px;
   top: 0px;
   bottom: 0px;
+  background-image: url("/static/img/bg.jpg");
 }
 .el-header {
-  background-color: #545c64;
+  /* background-color: #545c64; */
   color: #fff;
   line-height: 70px;
   box-shadow: 2px 2px 5px #888888;
@@ -99,10 +126,13 @@ export default {
 }
 #icon {
   height: 70px;
+  text-align: left;
+  margin-left: 40px;
+  line-height: 114px;
   /* width: 238px; */
 }
 .el-aside {
-  background-color: #545c64;
+  /* background-color: #545c64; */
   color: #333;
   text-align: left;
 }
@@ -114,12 +144,17 @@ export default {
   margin-left: 40px;
 }
 .loginDiv {
-  height: 70px;
   padding: 0px 20px;
   text-align: right;
-  font-size: 12px;
+  font-size: 18px;
   color: #fff;
+  display: inline;
+  line-height: 70px;
 }
+/* .headerDiv {
+  line-height: 100px;
+  display: inline;
+} */
 .loginDiv:hover {
   background-color: rgba(0, 0, 0, 0.025);
 }

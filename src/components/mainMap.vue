@@ -20,39 +20,14 @@
       <span class="topSpan">图层列表</span>
       <i class="el-icon-circle-plus-outline" style="float:right;line-height:50px;margin-right:10px;color:#fff;font-size:24px;cursor:pointer" @click="addData"></i>
     </div>
-    <!-- <el-dialog title="添加数据" :visible.sync="dialogVisible" width="30%" height="40%">
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="添加矢量服务" name="first">
-          <div>
-            <span>文件名称:</span>
-            <el-input v-model="shpinput" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
-          </div>
-          <div style="margin-top:10px">
-            <span>上传数据:</span>
-            <el-upload ref="upload" class="itembtn el-button" :action="uploadShp" :on-success="uploadShpSuccess">
-              <div class="el-upload__text">
-                <span class="text">添加shp(zip)</span>
-              </div>
-              <div class="el-upload__tip" slot="tip"></div>
-            </el-upload>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="添加栅格服务" name="second">
-          <div>
-            <span>服务名称:</span>
-            <el-input v-model="imginput" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
-          </div>
-          <div style="margin-top:10px">
-            <span>服务地址:</span>
-            <el-input v-model="imgurl" placeholder="请输入内容" style="width:300px;margin-left:10px"></el-input>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addGeoJson(geojson)">确 定</el-button>
-      </span>
-    </el-dialog> -->
+    <div id="changeMap" @mouseenter="enter" @mouseleave="leave">
+      <div class="clickDiv" v-show="!isopen"><i class="el-icon-arrow-left"></i></div>
+      <div class="clickDiv" v-show="isopen"><i class="el-icon-arrow-right"></i></div>
+      <div class="childDiv" v-for="(item,index) in layers" :key="index" :class="{ active: layerIndex == index }" @click="clickMap(index)">
+        <img :src="item.url" width="80px" height="76px" />
+        <span>{{ item.name }}</span>
+      </div>
+    </div>
     <el-dialog title="地图出图" :visible.sync="imagedialogVisible" width="30%" :modal="false" :before-close="handleClose" id="dialog">
       <div class="imgname">
         <span>出图名称:</span>
@@ -88,6 +63,9 @@ export default {
       //   imginput: "",
       //   imgurl: "",
       //   uploadShp: CONFIG.processServiceURL + "file/uploadShp",
+      isopen: false,
+      layerIndex: null,
+      layers: CONFIG.tdtLayerObj,
       newgeojson: "",
       geojson: "",
       xmin: "",
@@ -469,6 +447,137 @@ export default {
         });
       }
     },
+    enter () {
+      var changeMap = document.getElementById("changeMap");
+      changeMap.style.right = "0px";
+      changeMap.style.transition = "all 0.75s ease";
+      this.isopen = true;
+    },
+    leave () {
+      var changeMap = document.getElementById("changeMap");
+      changeMap.style.right = "-276px";
+      changeMap.style.transition = "all 0.75s ease";
+      this.isopen = false;
+    },
+    clickMap (index) {
+      if (this.layerIndex == index) {
+        if (this.layerIndex == 'heat') {
+          this.map.removeLayer('earthquakes-heat');
+          this.layerIndex = ""
+        } else if (this.layerIndex == 'cricle') {
+          this.map.removeLayer('clusters');
+          this.map.removeLayer('cluster-count');
+          this.map.removeLayer('unclustered-point');
+          this.map.removeSource('pointCircleSource')
+          this.layerIndex = ""
+        }
+      } else {
+        this.layerIndex = index
+        if (index == 'heat') {
+          this.map.addLayer({
+            'id': 'earthquakes-heat',
+            'type': 'heatmap',
+            'source': 'pointSource',
+            'maxzoom': 14,
+            'paint': {
+              'heatmap-intensity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0,
+                1,
+                14,
+                3
+              ],
+              'heatmap-color': [
+                'interpolate',
+                ['linear'],
+                ['heatmap-density'],
+                0,
+                'rgba(33,102,172,0)',
+                0.2,
+                'rgb(103,169,207)',
+                0.4,
+                'rgb(209,229,240)',
+                0.6,
+                'rgb(253,219,199)',
+                0.8,
+                'rgb(239,138,98)',
+                1,
+                'rgb(178,24,43)'
+              ],
+              'heatmap-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0,
+                2,
+                14,
+                20
+              ]
+            }
+          })
+        } else if (index == 'cricle') {
+          var that = this;
+          this.map.addSource('pointCircleSource', {
+            type: 'geojson',
+            data: that.source,
+            cluster: true,
+            clusterMaxZoom: 14, // Max zoom to cluster points on
+            clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+          });
+          this.map.addLayer({
+            id: 'clusters',
+            type: 'circle',
+            source: 'pointCircleSource',
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': [
+                'step',
+                ['get', 'point_count'],
+                '#51bbd6',
+                100,
+                '#f1f075',
+                750,
+                '#f28cb1'
+              ],
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                20,
+                100,
+                30,
+                750,
+                40
+              ]
+            }
+          });
+          this.map.addLayer({
+            id: 'cluster-count',
+            type: 'symbol',
+            source: 'pointCircleSource',
+            filter: ['has', 'point_count'],
+            layout: {
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['Times New Roman Regular'],
+              'text-size': 14,
+            }
+          });
+          this.map.addLayer({
+            id: 'unclustered-point',
+            type: 'circle',
+            source: 'pointCircleSource',
+            filter: ['!', ['has', 'point_count']],
+            paint: {
+              'circle-color': '#11b4da',
+              'circle-radius': 4,
+              'circle-stroke-width': 1,
+              'circle-stroke-color': '#fff'
+            }
+          });
+        }
+      }
+    },
     handleClose () {
       this.dataURL = "";
       this.imagedialogVisible = false;
@@ -561,6 +670,42 @@ export default {
   cursor: pointer;
   background: #fff;
   user-select: none;
+}
+#changeMap {
+  position: absolute;
+  bottom: 20px;
+  right: -276px;
+  width: 313px;
+  height: 111px;
+  border: 1px solid #fff;
+  display: inline-block;
+  background: rgba(90, 96, 108, 0.6);
+  cursor: pointer;
+}
+.childDiv {
+  display: inline-block;
+  height: 110px;
+  width: 90px;
+  padding-top: 8px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  border-radius: 5px;
+}
+.clickDiv {
+  display: inline-block;
+  height: 110px;
+  width: 30px;
+  /* border: 1px solid #fff; */
+  text-align: center;
+  color: #fff;
+  position: relative;
+  line-height: 110px;
+  vertical-align: top;
+}
+.clickDiv i {
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 #ebs {
   z-index: 2;

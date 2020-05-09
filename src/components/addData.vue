@@ -2,34 +2,93 @@
   <div id="addContain">
     <div id="top">
       <span class="topSpan">添加数据</span>
-      <i class="el-icon-close" style="float:right;line-height:50px;margin-right:10px;color:#fff;font-size:24px;cursor:pointer" @click="closeAddData"></i>
+      <i
+        class="el-icon-close"
+        style="float:right;line-height:50px;margin-right:10px;color:#fff;font-size:24px;cursor:pointer"
+        @click="closeAddData"
+      ></i>
     </div>
     <div id="systemData">
       <div class="queryDiv">
-        <el-select v-model="layerState" @change="changeData">
-          <el-option label="私有数据" value="0"></el-option>
-          <el-option label="公有数据" value="1"></el-option>
+        <el-select
+          v-model="layerState"
+          @change="changeData"
+        >
+          <el-option
+            label="私有数据"
+            value="0"
+          ></el-option>
+          <el-option
+            label="公有数据"
+            value="1"
+          ></el-option>
         </el-select>
-        <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="input" style="width:200px;float:right" @keyup.enter.native="queryData"></el-input>
+        <el-input
+          placeholder="请输入内容"
+          suffix-icon="el-icon-search"
+          v-model="input"
+          style="width:200px;float:right"
+          @keyup.enter.native="queryData"
+        ></el-input>
       </div>
-      <el-table height="492" :data="layerlist" border :header-cell-style="{background:'#eef1f6',color:'#606266',fontSize:'16px'}" :cell-style="{fontSize:'16px'}" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="36px">
+      <el-table
+        height="492"
+        :data="layerlist"
+        border
+        :header-cell-style="{background:'#eef1f6',color:'#606266',fontSize:'16px'}"
+        :cell-style="{fontSize:'16px'}"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="36px"
+        >
         </el-table-column>
-        <el-table-column prop="layerName" label="名称" width="315px" align="center">
+        <el-table-column
+          prop="layerName"
+          label="名称"
+          width="315px"
+          align="center"
+        >
         </el-table-column>
-        <el-table-column prop="updateTime" label="更新时间" width="315px" align="center">
+        <el-table-column
+          prop="updateTime"
+          label="更新时间"
+          width="315px"
+          align="center"
+        >
         </el-table-column>
-        <el-table-column prop="type" label="图层类型" width="315px" align="center">
+        <el-table-column
+          prop="type"
+          label="图层类型"
+          width="315px"
+          align="center"
+        >
         </el-table-column>
-        <el-table-column prop="state" label="使用状态" width="315px" align="center">
+        <el-table-column
+          prop="state"
+          label="使用状态"
+          width="315px"
+          align="center"
+        >
           <template slot-scope="scope">
             <div :style="{'color':scope.row.state=='已使用'?'#0000ff':'#000'}">{{ scope.row.state }}</div>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination style="text-align:center;margin-top:20px;font-size:20px;dispaly:inline-table" background @current-change="handleCurrentChange" :page-size="8" layout="total, prev, pager, next" :total="layerLength">
+      <el-pagination
+        style="text-align:center;margin-top:20px;font-size:20px;dispaly:inline-table"
+        background
+        @current-change="handleCurrentChange"
+        :page-size="8"
+        layout="total, prev, pager, next"
+        :total="layerLength"
+      >
       </el-pagination>
-      <el-button style="float:right;margin-top:-30px;margin-right:20px" @click="addLayers">添加数据</el-button>
+      <el-button
+        style="float:right;margin-top:-30px;margin-right:20px"
+        @click="addLayers"
+      >添加数据</el-button>
     </div>
   </div>
 </template>
@@ -76,7 +135,7 @@ export default {
     getlayerlist () {
       var that = this;
       this.getlayers({
-        data: { layerUser: 'zy' },
+        data: { layerUser: this.username },
         callBack: res => {
           that.layerlist = res.data.user;
           that.layerLength = res.data.user.length;
@@ -126,7 +185,7 @@ export default {
       if (this.input != "") {
         var that = this
         this.getlayers({
-          data: { layerUser: 'zy' },
+          data: { layerUser: that.username },
           callBack: res => {
             that.layerlist = res.data.user;
             for (let i = that.layerlist.length - 1; i >= 0; i--) {
@@ -186,7 +245,7 @@ export default {
       var number = 8 * (val - 1)
       var that = this;
       that.getlayers({
-        data: { layerUser: 'zy', limit: 8, offset: number },
+        data: { layerUser: that.username, limit: 8, offset: number },
         callBack: res => {
           that.layerlist = res.data.user;
           for (const key in that.layerlist) {

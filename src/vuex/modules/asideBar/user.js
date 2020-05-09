@@ -124,24 +124,17 @@ const actions = {
       }
     });
   },
-  createUser(context, {
+  addUser(context, {
     data,
     callBack
   }) {
-    UserService.createUser(data).then(res => {
-      if (res.isSuccess) {
-        context.commit('SET_MESSAGE', {
-          type: 'success',
-          message: '新建用户成功。'
-        }, {
-          root: true
-        });
-        context.dispatch('getUserList');
+    UserService.addUser(data).then(res => {
+      if (res) {
         callBack(res);
       } else {
         context.commit('SET_MESSAGE', {
           type: 'error',
-          message: '新建用户失败。'
+          message: '编辑用户失败。'
         }, {
           root: true
         });

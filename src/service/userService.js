@@ -11,6 +11,13 @@ class UserService {
       params: data
     });
   }
+  async addUser(data) {
+    return axios({
+      url: CONFIG.baseurl + "login",
+      method: 'post',
+      params: data
+    });
+  }
   async editUser(data) {
     return axios({
       url: CONFIG.baseurl + "login",

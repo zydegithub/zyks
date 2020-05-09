@@ -1,88 +1,241 @@
 <template>
   <div id="mainMap">
-    <div id="map" ref="map"></div>
-    <MousePostion v-if="mapbuild" :map="map"></MousePostion>
+    <div
+      id="map"
+      ref="map"
+    ></div>
+    <MousePostion
+      v-if="mapbuild"
+      :map="map"
+    ></MousePostion>
     <div id="leftTable">
       <div class="titleDiv"><span>数据</span>
-        <el-select v-model="selectlayerId" placeholder="请选择数据" @change="changeData">
-          <el-option v-for="item in layerlist" :key="item.value" :label="item.showName" :value="item.layerId">
+        <el-select
+          v-model="selectlayerId"
+          placeholder="请选择数据"
+          @change="changeData"
+        >
+          <el-option
+            v-for="item in layerlist"
+            :key="item.value"
+            :label="item.showName"
+            :value="item.layerId"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="tableDiv">
         <div style="marginBottom:8px">
           <span style="lineHeight:36px">[共{{ tableData.length }}条数据]</span>
-          <el-button style="float: right; marginRight:30px;" size="medium" v-show="isDelete" @click="deleteDialog">
+          <el-button
+            style="float: right; marginRight:30px;"
+            size="medium"
+            v-show="isDelete"
+            @click="deleteDialog"
+          >
             批量删除
           </el-button>
-          <el-button style="float: right; marginRight:16px;" size="medium" v-show="isEdit" @click="editDialog">
+          <el-button
+            style="float: right; marginRight:16px;"
+            size="medium"
+            v-show="isEdit"
+            @click="editDialog"
+          >
             编辑
           </el-button>
         </div>
-        <el-table :data="tableData" border style="width:370px" height="650" @row-click="rowClick" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="35">
+        <el-table
+          :data="tableData"
+          border
+          style="width:370px"
+          height="650"
+          @row-click="rowClick"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="35"
+          >
           </el-table-column>
-          <el-table-column prop="id" label="编号" width="80">
+          <el-table-column
+            prop="id"
+            label="编号"
+            width="80"
+          >
           </el-table-column>
-          <el-table-column v-for="item in layerFields" :key="item.id" :prop="item.ENname" :label="item.CNname" width="130">
+          <el-table-column
+            v-for="item in layerFields"
+            :key="item.id"
+            :prop="item.ENname"
+            :label="item.CNname"
+            width="130"
+          >
             <template slot-scope="{row,$index}">
-              <el-input v-model="row[item.ENname]" v-if="currentEdit === $index" @keyup.enter.native="finishEditClick()"></el-input>
+              <el-input
+                v-model="row[item.ENname]"
+                v-if="currentEdit === $index"
+                @keyup.enter.native="finishEditClick()"
+              ></el-input>
               <span v-else>{{row[item.ENname]}}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="layerType=='point'" prop="lnglat" label="经纬度" width="159">
+          <el-table-column
+            v-if="layerType=='point'"
+            prop="lnglat"
+            label="经纬度"
+            width="159"
+          >
           </el-table-column>
-          <el-table-column v-if="layerType=='line' || layerType=='polygon'" prop="pointNumber" label="折点数" width="130">
+          <el-table-column
+            v-if="layerType=='line' || layerType=='polygon'"
+            prop="pointNumber"
+            label="折点数"
+            width="130"
+          >
           </el-table-column>
         </el-table>
       </div>
     </div>
-    <el-button id="drawBtn" @click="drawData"><i class="el-icon-location">标绘</i></el-button>
-    <el-button id="allmapBtn" @click="allMap"><i class="el-icon-crop">全图</i></el-button>
-    <el-button id="saveBtn" @click="saveFeature"><i class="el-icon-circle-check">保存</i></el-button>
-    <div id="changeMap" @mouseenter="enter" @mouseleave="leave">
-      <div class="clickDiv" v-show="!isopen"><i class="el-icon-arrow-left"></i></div>
-      <div class="clickDiv" v-show="isopen"><i class="el-icon-arrow-right"></i></div>
-      <div class="childDiv" v-for="(item,index) in layers" :key="index" :class="{ active: layerIndex == index }" @click="clickMap(index)">
-        <img :src="item.url" width="80px" height="76px" />
+    <el-button
+      id="drawBtn"
+      @click="drawData"
+    ><i class="el-icon-location">标绘</i></el-button>
+    <el-button
+      id="allmapBtn"
+      @click="allMap"
+    ><i class="el-icon-crop">全图</i></el-button>
+    <el-button
+      id="saveBtn"
+      @click="saveFeature"
+    ><i class="el-icon-circle-check">保存</i></el-button>
+    <div
+      id="changeMap"
+      @mouseenter="enter"
+      @mouseleave="leave"
+    >
+      <div
+        class="clickDiv"
+        v-show="!isopen"
+      ><i class="el-icon-arrow-left"></i></div>
+      <div
+        class="clickDiv"
+        v-show="isopen"
+      ><i class="el-icon-arrow-right"></i></div>
+      <div
+        class="childDiv"
+        v-for="(item,index) in layers"
+        :key="index"
+        :class="{ active: layerIndex == index }"
+        @click="clickMap(index)"
+      >
+        <img
+          :src="item.url"
+          width="80px"
+          height="76px"
+        />
         <span>{{ item.name }}</span>
       </div>
     </div>
     <div id="drawData">
-      <el-dialog title="新增" :visible.sync="drawDataDialog" width="300px" :modal="false">
+      <el-dialog
+        title="新增"
+        :visible.sync="drawDataDialog"
+        width="300px"
+        :modal="false"
+      >
         <el-form :model="form">
-          <el-form-item v-for="(item,index) in layerFields" :key="index" :label="item.CNname+' : '" label-width="80px">
-            <el-input v-model="item.fieldValue" :ref="'input'+index" autocomplete="off" @input="change"></el-input>
+          <el-form-item
+            v-for="(item,index) in layerFields"
+            :key="index"
+            :label="item.CNname+' : '"
+            label-width="100px"
+          >
+            <el-input
+              v-model="item.fieldValue"
+              :ref="'input'+index"
+              autocomplete="off"
+              @input="change"
+            ></el-input>
           </el-form-item>
-          <el-form-item v-if="layerType=='point'" label="经纬度:" label-width="80px">
-            <el-input v-model="form.lnglat" autocomplete="off"></el-input>
+          <el-form-item
+            v-if="layerType=='point'"
+            label="经纬度:"
+            label-width="100px"
+          >
+            <el-input
+              v-model="form.lnglat"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item v-if="layerType=='line' || layerType=='polygon'" label="折点数:" label-width="60px">
-            <el-input v-model="form.pointNumber" autocomplete="off"></el-input>
+          <el-form-item
+            v-if="layerType=='line' || layerType=='polygon'"
+            label="折点数:"
+            label-width="100px"
+          >
+            <el-input
+              v-model="form.pointNumber"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
           <el-button @click="cancel">取 消</el-button>
-          <el-button type="primary" @click="addFeature">确 定</el-button>
+          <el-button
+            type="primary"
+            @click="addFeature"
+          >确 定</el-button>
         </div>
       </el-dialog>
     </div>
-    <el-dialog title="提示" :visible.sync="delDialogVisible" width="30%">
+    <el-dialog
+      title="提示"
+      :visible.sync="delDialogVisible"
+      width="30%"
+    >
       <span>是否确定删除数据?</span>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="delDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteFeature">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteFeature"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="editDialogVisible" width="300px" :modal="false">
+    <el-dialog
+      title="编辑"
+      :visible.sync="editDialogVisible"
+      width="300px"
+      :modal="false"
+    >
       <el-form>
-        <el-form-item v-for="(item,index) in layerFields" :key="index" :label="item.CNname" label-width="80px">
-          <el-input v-model="item.fieldValue" autocomplete="off" @input="change"></el-input>
+        <el-form-item
+          v-for="(item,index) in layerFields"
+          :key="index"
+          :label="item.CNname"
+          label-width="80px"
+        >
+          <el-input
+            v-model="item.fieldValue"
+            autocomplete="off"
+            @input="change"
+          ></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="editDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="editFeature">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="editFeature"
+        >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -136,7 +289,8 @@ export default {
   computed: {
     ...mapGetters({
       layerId: "layerId",
-      addLayers: "addLayers"
+      addLayers: "addLayers",
+      username: "username"
     })
   },
   components: {
@@ -272,7 +426,7 @@ export default {
     getlayerlist () {
       var that = this;
       this.getlayers({
-        data: { layerUser: 'zy' },
+        data: { layerUser: that.username },
         callBack: res => {
           that.layerlist = res.data.user;
         }
@@ -290,7 +444,6 @@ export default {
         data: { layerId: this.layerId },
         callBack: res => {
           this.layerFields = res.data.user;
-          console.log(this.layerFields)
         }
       });
       this.getlayersId({
@@ -538,8 +691,8 @@ export default {
           var file = new File([u8arr], `${filename}.${suffix}`, { type: mime });
           var formdata = new FormData();
           formdata.append("file", file)
-          that.$axios.post('http://39.105.87.199:7001/upload', formdata, {
-            //   that.$axios.post('http://localhost:7001/upload', formdata, {
+            that.$axios.post('http://39.105.87.199:7001/upload', formdata, {
+          // that.$axios.post('http://localhost:7001/upload', formdata, {
             'Content-Type': 'multipart/form-data'
           }).then(res => {
             var strJson = JSON.stringify(this.source);
@@ -613,6 +766,11 @@ export default {
           this.layerIndex = ""
         }
       } else {
+        if (this.map.getLayer('earthquakes-heat')) this.map.removeLayer('earthquakes-heat');
+        if (this.map.getLayer('clusters')) this.map.removeLayer('clusters');
+        if (this.map.getLayer('cluster-count')) this.map.removeLayer('cluster-count');
+        if (this.map.getLayer('unclustered-point')) this.map.removeLayer('unclustered-point');
+        if (this.map.getSource('pointCircleSource')) this.map.removeSource('pointCircleSource');
         this.layerIndex = index
         if (index == 'heat') {
           this.map.addLayer({
@@ -733,7 +891,7 @@ export default {
   position: absolute;
   left: 0px;
   bottom: 0px;
-  top: 10px;
+  top: 0px;
   width: 420px;
   background-color: #fff;
 }

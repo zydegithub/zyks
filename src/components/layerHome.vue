@@ -16,7 +16,7 @@
         <el-form-item label="图层类型">
           <el-input v-model="layerType" disabled style="width:60%"></el-input>
         </el-form-item>
-        <el-form-item label="图层类型">
+        <el-form-item label="共享范围">
           <el-input v-model="layerState" disabled style="width:60%"></el-input>
         </el-form-item>
       </el-form>
@@ -43,7 +43,7 @@
         </el-form-item>
         <el-form-item label="注记字段">
           <el-select v-model="field" placeholder="请选择字段" @change="fieldChange">
-            <el-option v-for="item in fields" :key="item.id" :label="item.CNname" :value="item.CNname"></el-option>
+            <el-option v-for="item in fields" :key="item.id" :label="item.CNname" :value="item.ENname"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="注记大小">
@@ -104,7 +104,7 @@ export default {
         data: { layerId: id },
         callBack: res => {
           this.fields = res.data.user;
-          this.field = this.fields[0].CNname
+          this.field = this.fields[0].ENname
           this.getlayersId({
             data: { layerId: id },
             callBack: res => {

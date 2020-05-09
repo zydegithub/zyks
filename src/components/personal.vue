@@ -177,6 +177,7 @@ export default {
   text-align: left;
   margin-left: 80px;
   margin-top: 40px;
+  color:#fff;
 }
 .title {
   margin-top: 20px;

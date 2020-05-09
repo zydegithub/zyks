@@ -1,26 +1,60 @@
 <template>
   <div class="layerManager">
     <el-card class="box-card-left">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span class="headerSpan">图层管理</span>
         <el-divider direction="vertical"></el-divider>
-        <el-button style="float: right; marginRight:4px" type="success" @click="refreshLayer">
+        <el-button
+          style="float: right; marginRight:4px"
+          type="success"
+          @click="refreshLayer"
+        >
           <i class="el-icon-refresh"></i>刷新
         </el-button>
-        <el-button style="float: right; marginRight:4px" type="primary" @click="addlayer">
+        <el-button
+          style="float: right; marginRight:4px"
+          type="primary"
+          @click="addlayer"
+        >
           <i class="el-icon-plus"></i>添加
         </el-button>
       </div>
       <ul class="layerUl">
-        <li v-for="(item,index) in layerlist" :key="item.id" @click="querylayer(item.layerId)">
-          <el-image style="width: 18px; height: 18px" src="./static/img/point.png" v-if="item.layerType=='point'"></el-image>
-          <el-image style="width: 22px; height: 22px" src="./static/img/line.png" v-if="item.layerType=='line'"></el-image>
-          <el-image style="width: 22px; height: 22px" src="./static/img/polygon.png" v-if="item.layerType=='polygon'"></el-image>
+        <li
+          v-for="(item,index) in layerlist"
+          :key="item.id"
+          @click="querylayer(item.layerId)"
+        >
+          <el-image
+            style="width: 18px; height: 18px"
+            src="./static/img/point.png"
+            v-if="item.layerType=='point'"
+          ></el-image>
+          <el-image
+            style="width: 22px; height: 22px"
+            src="./static/img/line.png"
+            v-if="item.layerType=='line'"
+          ></el-image>
+          <el-image
+            style="width: 22px; height: 22px"
+            src="./static/img/polygon.png"
+            v-if="item.layerType=='polygon'"
+          ></el-image>
           <div class="spanDiv">
             {{item.showName }} ({{item.layerName}})
           </div>
-          <el-dropdown @command="handleCommand" placement="bottom" style="height:50px">
-            <i class="el-icon-s-operation" style="line-height:70px;font-size:26px;"></i>
+          <el-dropdown
+            @command="handleCommand"
+            placement="bottom"
+            style="height:50px"
+          >
+            <i
+              class="el-icon-s-operation"
+              style="line-height:70px;font-size:26px;"
+            ></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(index,item.layerId,'edit')">编辑图层</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(index,item.layerId,'delete')">删除图层</el-dropdown-item>
@@ -28,37 +62,104 @@
           </el-dropdown>
         </li>
       </ul>
-      <el-pagination style="font-size:20px;position:absolute;bottom:40px;right:0px;left:0px" :current-page.sync="currentPage" background @current-change="handleCurrentChange" :page-size="8" layout="total, prev, pager, next" :total="layerLength">
+      <el-pagination
+        style="font-size:20px;position:absolute;bottom:40px;right:0px;left:0px"
+        :current-page.sync="currentPage"
+        background
+        @current-change="handleCurrentChange"
+        :page-size="8"
+        layout="total, prev, pager, next"
+        :total="layerLength"
+      >
       </el-pagination>
     </el-card>
     <el-card class="box-card-right">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span class="headerSpan">图层信息</span>
         <el-divider direction="vertical"></el-divider>
-        <el-button style="float: right; marginRight:4px" type="primary" plain @click="uploadData">上传数据</el-button>
-        <el-button style="float: right; marginRight:4px" type="primary" plain @click="getData">数据采集</el-button>
-        <el-button style="float: right; marginRight:4px" type="success" @click="refreshField">
+        <el-button
+          style="float: right; marginRight:4px"
+          type="primary"
+          plain
+          @click="uploadData"
+        >上传数据</el-button>
+        <el-button
+          style="float: right; marginRight:4px"
+          type="primary"
+          plain
+          @click="getData"
+        >数据采集</el-button>
+        <el-button
+          style="float: right; marginRight:4px"
+          type="success"
+          @click="refreshField"
+        >
           <i class="el-icon-refresh"></i>刷新
         </el-button>
-        <el-button style="float: right; marginRight:4px" type="primary" @click="addfield">
+        <el-button
+          style="float: right; marginRight:4px"
+          type="primary"
+          @click="addfield"
+        >
           <i class="el-icon-plus"></i>添加
         </el-button>
       </div>
-      <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="ENname" label="字段名称" width="180"></el-table-column>
-        <el-table-column prop="CNname" label="显示名称" width="180"></el-table-column>
-        <el-table-column prop="fieldType" label="字段类型" width="180"></el-table-column>
-        <el-table-column prop="fieldSitua" label="字段描述" width="180"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="180">
+      <el-table
+        :data="tableData"
+        stripe
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="ENname"
+          label="字段名称"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="CNname"
+          label="显示名称"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="fieldType"
+          label="字段类型"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="fieldSitua"
+          label="字段描述"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="operation"
+          label="操作"
+          width="180"
+        >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button
+              size="mini"
+              @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button>
+            <el-button
+              size="mini"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog title="添加图层" :visible.sync="layerVisible" width="24%">
-      <el-form ref="form" :model="layerForm" label-width="80px">
+    <el-dialog
+      title="添加图层"
+      :visible.sync="layerVisible"
+      width="24%"
+    >
+      <el-form
+        ref="form"
+        :model="layerForm"
+        label-width="80px"
+      >
         <el-form-item label="图层名称">
           <el-input v-model="layerForm.layerName"></el-input>
         </el-form-item>
@@ -66,23 +167,66 @@
           <el-input v-model="layerForm.showName"></el-input>
         </el-form-item>
         <el-form-item label="图层类型">
-          <el-select v-model="layerForm.type" placeholder="请选择图层类型">
-            <el-option label="点" value="point"></el-option>
-            <el-option label="线" value="line"></el-option>
-            <el-option label="面" value="polygon"></el-option>
+          <el-select
+            v-model="layerForm.type"
+            placeholder="请选择图层类型"
+          >
+            <el-option
+              label="点"
+              value="point"
+            ></el-option>
+            <el-option
+              label="线"
+              value="line"
+            ></el-option>
+            <el-option
+              label="面"
+              value="polygon"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="共享范围"
+        >
+          <el-select v-model="layerForm.layerState">
+            <el-option
+              label="私有数据"
+              value="0"
+            ></el-option>
+            <el-option
+              label="公有数据"
+              value="1"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="图层描述">
-          <el-input type="textarea" v-model="layerForm.situation"></el-input>
+          <el-input
+            type="textarea"
+            v-model="layerForm.situation"
+          ></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="layerVisible = false">取 消</el-button>
-        <el-button type="primary" @click="apiAddLayer">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="apiAddLayer"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加字段" :visible.sync="fieldVisible" width="24%">
-      <el-form ref="form" :model="fieldForm" label-width="80px">
+    <el-dialog
+      title="添加字段"
+      :visible.sync="fieldVisible"
+      width="24%"
+    >
+      <el-form
+        ref="form"
+        :model="fieldForm"
+        label-width="80px"
+      >
         <el-form-item label="字段名称">
           <el-input v-model="fieldForm.ENname"></el-input>
         </el-form-item>
@@ -90,80 +234,190 @@
           <el-input v-model="fieldForm.CNname"></el-input>
         </el-form-item>
         <el-form-item label="字段类型">
-          <el-select v-model="fieldForm.fieldType" placeholder="请选择图层类型">
-            <el-option label="数字" value="number"></el-option>
-            <el-option label="文本" value="string"></el-option>
+          <el-select
+            v-model="fieldForm.fieldType"
+            placeholder="请选择图层类型"
+          >
+            <el-option
+              label="数字"
+              value="number"
+            ></el-option>
+            <el-option
+              label="文本"
+              value="string"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="字段描述">
-          <el-input type="textarea" v-model="fieldForm.fieldSitua"></el-input>
+          <el-input
+            type="textarea"
+            v-model="fieldForm.fieldSitua"
+          ></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="fieldVisible = false">取 消</el-button>
-        <el-button type="primary" @click="apiAddField">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="apiAddField"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="editDialogVisible" width="400px" :modal="false">
+    <el-dialog
+      title="编辑"
+      :visible.sync="editDialogVisible"
+      width="400px"
+      :modal="false"
+    >
       <el-form>
-        <el-form-item label="字段名称:" label-width="100px">
-          <el-input v-model="fieldForm.ENname" autocomplete="off"></el-input>
+        <el-form-item
+          label="字段名称:"
+          label-width="100px"
+        >
+          <el-input
+            v-model="fieldForm.ENname"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="显示名称:" label-width="100px">
-          <el-input v-model="fieldForm.CNname" autocomplete="off"></el-input>
+        <el-form-item
+          label="显示名称:"
+          label-width="100px"
+        >
+          <el-input
+            v-model="fieldForm.CNname"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="字段类型" label-width="100px">
+        <el-form-item
+          label="字段类型"
+          label-width="100px"
+        >
           <el-select v-model="fieldForm.fieldType">
-            <el-option label="数字" value="number"></el-option>
-            <el-option label="文本" value="string"></el-option>
+            <el-option
+              label="数字"
+              value="number"
+            ></el-option>
+            <el-option
+              label="文本"
+              value="string"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="字段描述:" label-width="100px">
-          <el-input v-model="fieldForm.fieldSitua" autocomplete="off"></el-input>
+        <el-form-item
+          label="字段描述:"
+          label-width="100px"
+        >
+          <el-input
+            v-model="fieldForm.fieldSitua"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="editDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="apiEditField">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="apiEditField"
+        >确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="editLayerDialogVisible" width="400px" :modal="false">
+    <el-dialog
+      title="编辑"
+      :visible.sync="editLayerDialogVisible"
+      width="400px"
+      :modal="false"
+    >
       <el-form>
-        <el-form-item label="图层名称:" label-width="100px">
-          <el-input v-model="layerForm.layerName" autocomplete="off"></el-input>
+        <el-form-item
+          label="图层名称:"
+          label-width="100px"
+        >
+          <el-input
+            v-model="layerForm.layerName"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="显示名称:" label-width="100px">
-          <el-input v-model="layerForm.showName" autocomplete="off"></el-input>
+        <el-form-item
+          label="显示名称:"
+          label-width="100px"
+        >
+          <el-input
+            v-model="layerForm.showName"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="共享范围:" label-width="100px">
+        <el-form-item
+          label="共享范围:"
+          label-width="100px"
+        >
           <el-select v-model="layerForm.layerState">
-            <el-option label="私有数据" value="0"></el-option>
-            <el-option label="公有数据" value="1"></el-option>
+            <el-option
+              label="私有数据"
+              value="0"
+            ></el-option>
+            <el-option
+              label="公有数据"
+              value="1"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="editLayerDialogVisible=false">取 消</el-button>
-        <el-button type="primary" @click="apiEditLayer">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="apiEditLayer"
+        >确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="添加数据" :visible.sync="dialogVisible" width="400px">
+    <el-dialog
+      title="添加数据"
+      :visible.sync="dialogVisible"
+      width="400px"
+    >
       <el-form>
         <!-- <el-form-item label="文件名称:" label-width="100px">
           <el-input v-model="shpinput" placeholder="请输入内容" autocomplete="off"></el-input>
         </el-form-item> -->
-        <el-form-item label="上传数据:" label-width="100px" style="text-align:left">
-          <el-upload ref="upload" class="itembtn el-button" :action="uploadShp" :on-success="uploadShpSuccess">
+        <el-form-item
+          label="上传数据:"
+          label-width="100px"
+          style="text-align:left"
+        >
+          <el-upload
+            ref="upload"
+            class="itembtn el-button"
+            :action="uploadShp"
+            :on-success="uploadShpSuccess"
+          >
             <div class="el-upload__text">
               <span class="text">添加shp(zip)</span>
             </div>
-            <div class="el-upload__tip" slot="tip"></div>
+            <div
+              class="el-upload__tip"
+              slot="tip"
+            ></div>
           </el-upload>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addGeoJson">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="addGeoJson"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -225,13 +479,13 @@ export default {
     getlayerlist () {
       var that = this;
       this.getlayers({
-        data: { layerUser: 'zy', limit: 8, offset: 0 },
+        data: { layerUser: that.username, limit: 8, offset: 0 },
         callBack: res => {
           this.layerlist = res.data.user;
         }
       });
       that.getlayers({
-        data: { layerUser: 'zy' },
+        data: { layerUser: that.username },
         callBack: res => {
           that.layerLength = res.data.user.length;
         }
@@ -517,7 +771,7 @@ export default {
       var number = 8 * (val - 1)
       var that = this;
       that.getlayers({
-        data: { layerUser: 'zy', limit: 8, offset: number },
+        data: { layerUser: that.username, limit: 8, offset: number },
         callBack: res => {
           that.layerlist = res.data.user;
         }
